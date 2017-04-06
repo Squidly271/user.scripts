@@ -2,8 +2,8 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "user.scripts">
 <!ENTITY author    "Andrew Zawadzki">
-<!ENTITY version   "2017.04.05">
-<!ENTITY md5       "4ffd8aa3f20d23891c33d7719d7bd015">
+<!ENTITY version   "2017.04.06">
+<!ENTITY md5       "4c4c2cbe1c7ce2fcaf75c5c7c398acfb">
 <!ENTITY launch    "Settings/Userscripts">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
 <!ENTITY github    "Squidly271/user.scripts">

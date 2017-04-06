@@ -397,7 +397,6 @@ function cancelDesc(myID) {
 }
 
 function applyDesc(myID) {
-  $("#debugging").html(myID);
   var newDesc = $("#newDesc"+myID).val();
   newDesc = newDesc.replace(/\n/g, "<br>");
   var script = $("#"+myID).attr("data-scriptname");
