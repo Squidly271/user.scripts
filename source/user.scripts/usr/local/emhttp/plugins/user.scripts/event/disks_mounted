@@ -1,0 +1,9 @@
+#!/bin/bash
+/usr/local/emhttp/plugins/user.scripts/startSchedule.php start
+
+if [ ! -e /tmp/user.scripts/booted ]
+  then
+    mkdir -p "/tmp/user.scripts/"
+    echo "booted" > /tmp/user.scripts/booted
+    /usr/local/emhttp/plugins/user.scripts/startSchedule.php boot
+fi

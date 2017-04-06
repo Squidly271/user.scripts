@@ -1,0 +1,541 @@
+Menu="Utilities"
+Icon="icon-exec.png"
+Title="User Scripts"
+---
+<?
+#######################################################
+#                                                     #
+# User Scripts Plugin Copyright 2016, Andrew Zawadzki #
+#                                                     #
+#######################################################
+
+require_once("/usr/local/emhttp/plugins/user.scripts/helpers.php");
+require_once("/usr/local/emhttp/plugins/user.scripts/caCredits.php");
+
+exec("mkdir -p /boot/config/plugins/user.scripts/scripts");
+exec("mkdir -p /tmp/user.scripts/running");
+exec("mkdir -p /tmp/user.scripts/finished");
+
+$installedVersion = exec("/usr/local/emhttp/plugins/dynamix.plugin.manager/scripts/plugin version /var/log/plugins/user.scripts.plg");
+if ( is_file("/tmp/plugins/community.applications.plg") ) {
+  $upgradeVersion = exec("/usr/local/emhttp/plugins/dynamix.plugin.manager/scripts/plugin version /tmp/plugins/user.scripts.plg");
+} else {
+  $upgradeVersion = "0";
+}
+
+$vars = parse_ini_file("/var/local/emhttp/var.ini");
+$toolTipsterAllowed = version_compare($vars['version'],"6.3.3",">=") ? "true" : "false";
+
+$userScripts = @array_diff(@scandir("/boot/config/plugins/user.scripts/scripts"),array(".",".."));
+if ( ! is_array($userScripts) ) {
+  $userScripts = array();
+}
+foreach ($userScripts as $script) {
+  if ( ! is_file("/boot/config/plugins/user.scripts/scripts/$script/script") ) {
+    continue;
+  }
+  $variables = getScriptVariables("/boot/config/plugins/user.scripts/scripts/$script/script");
+  $command = $variables['directPHP'] ? "directRunScript" : "runScript";
+  $scriptName = $variables['name'] ? $variables['name'] : $script;
+  if ( is_file("/boot/config/plugins/user.scripts/scripts/$script/name") ) {
+    $scriptName = trim(file_get_contents("/boot/config/plugins/user.scripts/scripts/$script/name"));
+  }
+  $id = str_replace(".","-",$script);
+  $id = str_replace(" ","",$id);
+  $o .= "<tr><td width='30%'>";
+  $o .= "<font size='2'><b><span class='ca_nameEdit' id='name$id' data-scriptName=".escapeshellarg($script).">$scriptName</span></b></font><br>";
+  if ( is_file("/boot/config/plugins/user.scripts/scripts/$script/description") ) {
+    $description = @file_get_contents("/boot/config/plugins/user.scripts/scripts/$script/description");
+    $description = str_replace("\r","",$description);
+    $description = str_replace("\n","<br>",$description);
+  } else {
+    $description = $variables['description'] ? $variables['description'] : "No description (/boot/config/plugins/user.scripts/scripts/$script)";
+  }
+  $o .= "<span class='ca_descEdit' data-scriptName=".escapeshellarg($script)." id='desc$id'>$description</span>";
+  $o .= "</td>";
+  if ( ! $variables['backgroundOnly'] ) {
+    $o .= "<td width=10%><input type='button' value='Run Script' class='running$id' id='foreground$id' onclick='$command(&quot;/boot/config/plugins/user.scripts/scripts/$script/script&quot;);'></td>";
+  } else {
+    $o .= "<td width=10%></td>";
+  }
+  if ( ! $variables['foregroundOnly'] ) {
+    $o .= "<td width=10%><input type='button' value='Run In Background' class='running$id' id='$id' onclick='backgroundScript(&quot;/boot/config/plugins/user.scripts/scripts/$script/script&quot;,&quot;$id&quot;);'>";
+    $o .= "<td><select class='schedule' id='schedule$id' onchange='changeApply(&quot;$id&quot;);' data-script='&quot;/boot/config/plugins/user.scripts/scripts/$script/script&quot;'>";
+    $o .= "  <option value='disabled'>Schedule Disabled</option>";
+    $o .= "  <option value='hourly'>Scheduled Hourly</option>";
+    $o .= "  <option value='daily'>Scheduled Daily</option>";
+    $o .= "  <option value='weekly'>Scheduled Weekly</option>";
+    $o .= "  <option value='monthly'>Scheduled Monthly</option>";
+    $o .= "  <option value='start'>At Startup of Array</option>";
+    $o .= "  <option value='stop'>At Stopping of Array</option>";
+    $o .= "  <option value='boot'>At First Array Start Only</option>";
+    $o .= "  <option value='custom'>Custom</option>";
+    $o .= "</select></td>";
+    $o .= "<td width=15%><input id='customschedule$id'type='text' hidden onchange='changeApply(&quot;$id&quot;);' placeholder='Custom Cron Schedule' class='narrow'></td>";
+    $o .= "";
+  } else {
+    $o .= "<td width=10%></td><td width=15%></td>";
+  }
+  $o .= "<td><img class='ca_tooltip' src='/plugins/user.scripts/images/log.png' height='30px' id='log$id' onclick='showLog(&quot;$script&quot;);' style='display:none;cursor:pointer' title='Show Log'>";
+  $o .= "&nbsp;<img class='ca_tooltip' src='/plugins/user.scripts/images/download.png' height='30px' id='download$id' style='display:none;cursor:pointer;' title='Download Log' onclick='downloadLog(&quot;$script&quot;);'>";
+  $o .= "&nbsp;<img class='ca_tooltip' src='/plugins/user.scripts/images/delete-24.png' height='30px' id='trash$id' onclick='deleteLog(&quot;$script&quot;);'  style='display:none;cursor:pointer' title='Delete Log File'>";
+  $o .= "</td>";
+  $o .= "<td><font color='red'><span id='status$id'></span></font>";
+  $o .= "</tr>";
+}
+
+$scheduleScript = "<script>";
+$schedule = json_decode(@file_get_contents("/boot/config/plugins/user.scripts/schedule.json"),true);
+if ( ! $schedule ) { $schedule = array(); }
+
+foreach ($schedule as $scriptSchedule) {
+  $scheduleScript .= "$('#".$scriptSchedule['id']."').val('".$scriptSchedule['frequency']."');";
+  $scheduleScript .= "$('#custom".$scriptSchedule['id']."').val('".$scriptSchedule['custom']."');";
+  if ( $scriptSchedule['frequency'] == "custom" ) {
+    $scheduleScript .= "$('#custom".$scriptSchedule['id']."').show();";
+  }      
+}
+$scheduleScript .= "</script>";
+?>
+<script>
+var URL = "/plugins/user.scripts/exec.php";
+
+function abortScript(name) {
+   swal({
+    title: "Abort this script?",
+    text: "Are you sure you want to abort this script <font color='red'><b>"+name+"?</b></font>",
+    showConfirmButton: true,
+    showCancelButton: true,
+    closeOnConfirm: false,
+    type: "warning",
+    html: true
+  },
+  function() {
+    
+    $.post(URL,{action:"abortScript",name:name});
+    swal({
+      title: "Aborted!",
+      text: "The script <font color='red'><b>"+name+"</b></font> has been aborted",
+      showConfirmButton: true,
+      showCancelButton: false,
+      closeOnConfirm: true,
+      html: true,
+      type: "success"
+    });
+  });
+}
+
+function deleteLog(name) {
+  swal({
+    title: "Delete the logs?",
+    text: "Are you sure you want to delete the logs from <font color='red'><b>"+name+"?</b><font>",
+    showConfirmButton: true,
+    showCancelButton: true,
+    closeOnConfirm: false,
+    type: "warning",
+    html:true
+  },
+  function() {
+    $.post(URL,{action:"deleteLog",name:name});
+    swal({
+      title: "Deleted",
+      text: "The log files from <font color='red'><b>"+name+"</b></font> have been deleted",
+      showConfirmButton: true,
+      showCancelButton: false,
+      html: true,
+      type: "success"
+    });
+  });
+}
+
+function basename( path ) {
+  return path.replace( /\\/g, '/' ).replace( /.*\//, '' );
+}
+
+function dirname( path ) {
+  return path.replace( /\\/g, '/' ).replace( /\/[^\/]*$/, '' );
+}
+
+function runScript(path) {
+  $.post(URL,{action:'getScriptVariablesString',script:path},function(data) {
+    if (data) {
+      var variables = new Array();
+      variables = parseINIString(data);
+      if ( variables['argumentDescription'] ) {
+        swal({
+          title: "Enter In Script Arguments",
+          text: variables['argumentDescription'],
+          type: "input",
+          inputValue: variables['argumentDefault'],
+          inputPlaceHolder: "Command Arguments",
+          showCancelButton: true,
+          closeOnConfirm: true
+        },function(inputValue){
+          if (inputValue) {
+            actuallyRunScript(path,inputValue);
+          }
+        });
+      } else {
+        actuallyRunScript(path,"");
+      }        
+    }
+  });
+}
+
+function actuallyRunScript(path,inputValue) {
+  $.post(URL,{action:'convertScript',path:path},function(data) {
+    if (data) {
+      openBox('/plugins/user.scripts/startScript.sh&arg1='+data+'&arg2='+inputValue,"Script "+basename(dirname(path))+" Running",800,1200);
+    }
+  });
+}
+
+function directRunScript(path) {
+  $.post(URL,{action:'directRunScript',path:path},function(data) {
+    if (data) {
+      openBox(data,"Script "+basename(dirname(path))+" Running",800,1200);
+    }
+  })
+}
+
+function backgroundScript(path,element) {
+  $.post(URL,{action:'getScriptVariables',script:path},function(data) {
+    if (data) {
+      var variables = new Array();
+      variables = parseINIString(data);
+      $.post(URL,{action:'convertScript',path:path},function(data) {
+        if (data) {
+          openBox('/plugins/user.scripts/backgroundScript.sh&arg1='+data,"Script Running",800,1200);
+        }
+      });
+    }
+  });
+}
+
+function downloadLog(script) {
+  $.post(URL,{action:'convertLog',script:script},function(data) {
+    if (data) {
+      window.open('/plugins/user.scripts/log.zip');
+    }
+  });
+}
+
+function showLog(script) {
+  openWindow('/plugins/user.scripts/showLog.php&arg1='+script,'Log Information',800,1200);
+}
+
+function checkBackground() {
+  $.post(URL,{action:'checkBackground'},function(data) {
+    if (data) {
+      $("#backgroundScript").html(data);
+    }
+  });
+}
+
+function changeApply(scheduleID) {
+  $("#applyButton").prop("disabled",false);
+  if ( $("#schedule" + scheduleID).val() == "custom" ) {
+    $("#customschedule" + scheduleID).show();
+  } else {
+    $("#customschedule" + scheduleID).hide();
+  }
+}
+
+function applySchedule() {
+  var schedule = new Array();
+  
+  $(".schedule").each(function() {
+    var script = $(this).data("script");
+    var frequency = $(this).val();
+    var custom = $("#custom"+this.id).val();
+    var newSchedule = new Array(script,frequency,this.id,custom);
+    
+    schedule.push(newSchedule);
+  });
+  $.post(URL,{action:'applySchedule',schedule:schedule}, function(data) {
+    if (data) {
+      $("#testing").html(data);
+    }
+  });
+  $("#applyButton").prop("disabled",true);
+}
+
+$(function() {
+  if ( "<?=$toolTipsterAllowed?>" == "true" ) {
+    $(".tipsterallowed").show();
+    $('.ca_tooltip').tooltipster({delay:[1000,1],timer:15000, animation:'grow', arrow:true, trigger:'custom', triggerOpen:{mouseenter: true}, triggerClose:{click:true,scroll:true,mouseleave:true}});
+    $('.ca_credits').tooltipster({
+      trigger: 'custom',
+      triggerOpen: {mouseenter:true},
+      triggerClose:{click:true,scroll:true,mouseleave:true},
+      contentAsHTML: true,
+      maxWidth:550,
+      minWidth:550,
+      animation: 'grow',
+      triggerClose:{click:false,scroll:true,mouseleave:true},
+      interactive: true,
+      viewportAware: true,
+      functionBefore: function(instance,helper) {
+        var origin = $(helper.origin);
+        var myID = origin.attr('id');
+        instance.content("<div style='overflow:scroll; max-height:350px; height:550px; overflow-x:hidden; overflow-y:auto;'><center><img src='/plugins/user.scripts/images/user.scripts.png' width=96px><br><font size='6' color='white'>CA User Scripts</font><br><br><?=$caCredits?></div>");
+      }
+    });  
+    $('.ca_cron').tooltipster({
+      trigger: 'custom',
+      triggerOpen: {mouseenter:true},
+      triggerClose:{click:true,scroll:true,mouseleave:true},
+      contentAsHTML: true,
+      maxWidth:550,
+      minWidth:550,
+      animation: 'grow',
+      triggerClose:{click:false,scroll:true,mouseleave:true},
+      interactive: true,
+      viewportAware: true,
+      functionBefore: function(instance,helper) {
+        var origin = $(helper.origin);
+        var myID = origin.attr('id');
+        instance.content("Custom schedule format (standard cron entry):<br><tt>┌───────────── minute (0 - 59)<br></tt><tt>│ ┌───────────── hour (0 - 23)<br></tt><tt>│ │ ┌───────────── day of month (1 - 31)<br></tt><tt>│ │ │ ┌───────────── month (1 - 12)<br></tt><tt>│ │ │ │ ┌───────────── day of week (0 - 6) (Sunday to Saturday)<br></tt><tt>│ │ │ │ │<br></tt><tt>│ │ │ │ │<br></tt><tt>│ │ │ │ │<br></tt><tt>* * * * *</tt><br>See <a href='https://en.wikipedia.org/wiki/Cron' target='_blank'>HERE</a> for examples.  Or <a href='http://www.corntab.com/' target='_blank'>HERE</a> for an online generator");
+      }
+    });  
+    $('.ca_nameEdit').tooltipster({
+      trigger: 'custom',
+      triggerOpen: {mouseenter:true},
+      triggerClose:{click:true,scroll:true,mouseleave:true},
+      delay: 1000,
+      contentAsHTML: true,
+      animation: 'grow',
+      triggerClose:{click:true,scroll:true,mouseleave:true},
+      interactive: true,
+      viewportAware: true,
+      functionBefore: function(instance,helper) {
+        var origin = $(helper.origin);
+        var myID = origin.attr('id');
+        var name = $("#"+myID).html();
+        var scriptName = $("#"+myID).attr("data-scriptname");
+        instance.content("/boot/config/plugins/user.scripts/scripts/"+scriptName + "<br><center><input type='button' value='Edit Name' onclick='editName(&quot;"+myID+"&quot;);'><input type='button' value='Edit Description' onclick='editDesc(&quot;"+myID+"&quot;);'><input type='button' onclick='editScript(&quot;"+myID+"&quot;);' value='Edit Script'></center>");
+      }
+    });
+  }
+  
+  setInterval(function() {
+    checkBackground();
+  }, 1000);
+  if ( "<?=$installedVersion?>" < "<?=$upgradeVersion?>" ) {
+    $('#upgradeAvailable').show();
+  }
+});
+
+function editName(myID) {
+  var currentName = $("#"+myID).html();
+  $("#"+myID).attr("data-originalName",currentName);
+  $("#"+myID).html("<input type='text' id='newName"+myID+"' value='"+currentName+"'><br><font color='red' size='4'><i class='fa fa-times' aria-hidden='true' style='cursor:pointer' onclick='cancelName(&quot;"+myID+"&quot;);'></i>&nbsp;&nbsp;<font color='green' size='4'><i style='cursor:pointer' onclick='applyName(&quot;"+myID+"&quot;);' class='fa fa-check' aria-hidden='true'></i></font>");
+  $("#"+myID).toolstipers("close");
+  $("#"+myID).tooltipster("disable");
+}
+
+function editDesc(myID) {
+  var origID = myID;
+  $("#"+myID).tooltipster("close");
+  myID = myID.replace("name","desc");
+  var currentDesc = $("#"+myID).html();
+  $("#"+myID).attr("data-originaldescription",currentDesc);
+  $("#"+myID).html("<textarea id='newDesc"+myID+"' cols='40' rows='5'>"+currentDesc+"</textarea><br><font color='red' size='4'><i class='fa fa-times' aria-hidden='true' style='cursor:pointer' onclick='cancelDesc(&quot;"+myID+"&quot;);'></i>&nbsp;&nbsp;<font color='green' size='4'><i style='cursor:pointer' onclick='applyDesc(&quot;"+myID+"&quot;); ' class='fa fa-check' aria-hidden='true'></i></font>");
+  $("#"+origID).tooltipster("enable");
+}
+
+function editScript(myID) {
+  var origID = myID;
+  $("#"+myID).tooltipster("close");
+  var script = $("#"+myID).attr("data-scriptname");
+  $("#editScriptName").html(script);
+  $.post(URL,{action:'getScript',script:script},function(data) {
+    if (data) {
+      $("#editScript").html(data);
+      $(".editing").show();
+    }
+  });
+}
+  
+function cancelEdit() {
+  $(".editing").hide();
+}
+
+function saveEdit() {
+  var script = $("#editScriptName").html();
+  var scriptContents = $("#editScript").val();
+  
+  $.post(URL,{action:'saveScript',script:script,scriptContents:scriptContents},function(data) {
+    if (data) {
+      $(".editing").hide();
+    }
+  });
+  
+}
+
+function applyName(myID) {
+  var newName = $("#newName"+myID).val();
+  var script = $("#"+myID).attr("data-scriptname");
+  $("#"+myID).html(newName);
+  $("#"+myID).tooltipster("enable");
+  $("#"+myID).tooltipster("close");
+  $.post(URL,{action:'changeName',script:script,newName:newName});
+}
+
+function cancelName(myID) {
+  var oldName = $("#"+myID).attr("data-originalName");
+  $("#"+myID).html(oldName);
+  $("#"+myID).tooltipster("enable");
+  $("#"+myID).tooltipster("close");
+}
+
+function cancelDesc(myID) {
+  var oldName = $("#"+myID).attr("data-originaldescription");
+  $("#"+myID).html(oldName);
+  $("#"+myID).tooltipster("enable");
+  $("#"+myID).tooltipster("close");
+}
+
+function applyDesc(myID) {
+  $("#debugging").html(myID);
+  var newDesc = $("#newDesc"+myID).val();
+  newDesc = newDesc.replace(/\n/g, "<br>");
+  var script = $("#"+myID).attr("data-scriptname");
+  $("#"+myID).html(newDesc);
+  $.post(URL,{action:'changeDesc',script:script,newDesc:newDesc});
+}
+
+function addScript() {
+  swal({
+    title: "Add New Script",
+    text: "Enter in the name for the script",
+    type: "input",
+    inputValue: "",
+    inputPlaceHolder: "Command Arguments",
+    showCancelButton: true,
+    closeOnConfirm: true
+  },function(inputValue){
+    if (inputValue) {
+      $.post(URL,{action:'addScript',scriptName:inputValue},function(data) {
+        if (data) {
+          location.reload();
+        }
+      });
+    }
+  });
+}
+
+function showCredits() {
+  myAlert("User Scripts","<?=$caCredits?>","/plugins/user.scripts/images/icon-exec.png","96x96", true, false, true);
+}
+
+function myAlert(description,textdescription,textimage,imagesize, outsideClick, showCancel, showConfirm, alertType) {
+  if ( !outsideClick ) outsideClick = false;
+  if ( !showCancel )   showCancel = false;
+  if ( !showConfirm )  showConfirm = false;
+  if ( imagesize == "" ) { imagesize = "80x80"; }
+  swal({
+    title: description,
+    text: textdescription,
+    imageUrl: textimage,
+    imageSize: imagesize,
+    allowOutsideClick: outsideClick,
+    showConfirmButton: showConfirm,
+    showCancelButton: showCancel,
+    type: alertType,
+    html: true
+  });
+}
+
+function parseINIString(data){
+    var regex = {
+        section: /^\s*\[\s*([^\]]*)\s*\]\s*$/,
+        param: /^\s*([\w\.\-\_]+)\s*=\s*(.*?)\s*$/,
+        comment: /^\s*;.*$/
+    };
+    var value = {};
+    var lines = data.split(/\r\n|\r|\n/);
+    var section = null;
+    lines.forEach(function(line){
+        if(regex.comment.test(line)){
+            return;
+        }else if(regex.param.test(line)){
+            var match = line.match(regex.param);
+            if(section){
+                value[section][match[1]] = match[2];
+            }else{
+                value[match[1]] = match[2];
+            }
+        }else if(regex.section.test(line)){
+            var match = line.match(regex.section);
+            value[match[1]] = {};
+            section = match[1];
+        }else if(line.length == 0 && section){
+            section = null;
+        };
+    });
+    return value;
+}
+</script>
+
+<span class='tipsterallowed' hidden><font size='2' color='purple'>For more editing options, hover over any script's name</font></span><br>
+<table class='tablesorter'>
+<?=$o?>
+</table>
+<br>
+<span class='tipsterallowed'><input type='button' value='Add New Script' onclick='addScript();'><span><br>
+<?=$scheduleScript?>
+<span id='testing'></span>
+<span id='backgroundScript'></span>
+<span id='downloadScript'></span>
+
+<input type='button' value='Apply' disabled onclick='applySchedule();' id='applyButton'><input type='button' value='Done' onclick='done();'>
+
+<center><input type='button' value='How To Add Scripts' onclick='$(&quot;#howToAdd&quot;).show();'></center>
+
+<span id='howToAdd' style='display:none'>
+To add your own user scripts, on the flash drive within the <font color='red'><b>config/plugins/user.scripts/scripts</b></font> folder, create a new folder for a script (the name does not matter of the folder <font color='red'> but it can only contain the following characters: letters ([A-Za-z]), digits ([0-9]), hyphens ("-"), underscores ("_"), colons (":"), periods ("."), and spaces (" ").</font>  Any other characters will impact the ability to run the script in the background.Within that folder, create a file called <font color='red'><b>description</b></font> which contains the description of the script.<br>
+Create a file called <font color='red'><b>script</b></font> which contains the actual script.
+Notepad can be used to do this on Windows machines, as prior to being executed, DOS line endings are automatically converted to Linux style line endings.  #!/bin/bash will even be automatically added to the start of the script before execution
+Note that user interaction (ie: answering questions within the script) will NOT work.  Also, if there are any dependencies for the script (ie: other scripts), those can be called as usual, but make note that during execution, the script does not run from the flash drive (ie: include the full path to any dependency scripts)
+There is no point in running a particular script in the background if the script displays text that you need to see (ie: displaying the size of the docker logs)
+<br><br>
+Additionally, scripts can contain inline variables which will modify the operation of the GUI for them.<br>
+<br>These variables are:<br><br>
+<b>description</b> - Contains the description of the script<br>
+<b>foregroundOnly</b> Setting this to be true disallows background running (and scheduling) of the script<br>
+<b>backgroundOnly</b> Setting this to be true disallows foreground running of the script<br>
+<b>arrayStarted</b> Setting this to be true will only run the script (foreground or background or scheduled) if the array is up and running<br>
+<b>name</b> this is the name of the script.  Without this variable, the GUI will display the folder's name<br>
+<b>argumentDescription</b> if present this will bring up a pop up asking the user for the argument list for the script.  Note that currently arguments do not accept spaces contained within one argument (ie: quoting and escaping spaces does NOT work)<br>
+<b>argumentDefault</b> this is the default arguments for the above<br>
+<br><b>How to implment these variables:</b> Immediately after the interpreter line (eg: immediately after the #!/bin/bash line), add these lines if you choose (you do not need to add all of them if you don't require them)<br>
+<br><font face='monospace'>
+&#35;description=this is the description of the script<br>
+&#35;foregroundOnly=true<br>
+&#35;backgroundOnly=true<br>
+&#35;arrayStarted=true<br>
+&#35;name=blah blah blah<br>
+&#35;argumentDescription=This is the description of the argument(s)<br>
+&#35;argumentDefault=defaultArg1 defaultArg2 etc<br></font>
+<br>
+After the first non comment line within any script, parsing for these variables stops.  (IE: they have to be right at the top of the script file)<br>
+<br>
+Note that you do NOT have to have any or all of the lines contained within any particular script.  (Also, if you do have the description file present, then its contents takes precedence over the description variable)<br>
+<br>
+*PHP scripters:  You can also place these variable lines immediately after the <? or <?PHP line<br>
+</span>
+<div id='upgradeAvailable' hidden><center> <font color='red'>An updated version of User Scripts is Available.</font></div>
+
+<a class='ca_cron' href='http://www.corntab.com/' target='_blank'>What Is Cron</a><a class='ca_credits' style='float:right;cursor:pointer' onclick='showCredits();'>Credits</a>
+<center>For help with this plugin, visit <a href='http://lime-technology.com/forum/index.php?topic=49992.0' target='_blank'>HERE</a></center>
+
+
+<span id='debugging'></span>
+
+<div class='editing' hidden>
+<center><b>Editing /boot/config/plugins/user.scripts/scripts/<span id='editScriptName'></span>/script</b><br>
+<input type='button' value='Cancel' onclick='cancelEdit();'><input type='button' onclick='saveEdit();' value='Save Changes'><br>
+<textarea id='editScript' style='width:800px; height:500px; border-color:red; font-family:monospace;'></textarea>
+</center>
+</div>
