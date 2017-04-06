@@ -313,7 +313,7 @@ $(function() {
         var myID = origin.attr('id');
         var name = $("#"+myID).html();
         var scriptName = $("#"+myID).attr("data-scriptname");
-        instance.content("/boot/config/plugins/user.scripts/scripts/"+scriptName + "<br><center><input type='button' value='Edit Name' onclick='editName(&quot;"+myID+"&quot;);'><input type='button' value='Edit Description' onclick='editDesc(&quot;"+myID+"&quot;);'><input type='button' onclick='editScript(&quot;"+myID+"&quot;);' value='Edit Script'></center>");
+        instance.content("/boot/config/plugins/user.scripts/scripts/"+scriptName + "<br><center><input type='button' value='Edit Name' onclick='editName(&quot;"+myID+"&quot;);'><input type='button' value='Edit Description' onclick='editDesc(&quot;"+myID+"&quot;);'><input type='button' onclick='editScript(&quot;"+myID+"&quot;);' value='Edit Script'><input type='button' onclick='deleteScript(&quot;"+myID+"&quot;);' value='Delete Script'></center>");
       }
     });
   }
@@ -425,6 +425,25 @@ function addScript() {
   });
 }
 
+function deleteScript(myID) {
+  var scriptName = $("#"+myID).attr("data-scriptname");
+  var script = $("#"+myID).html();
+  swal({
+    text: "Are you sure you want to delete <font color='red'><b>"+script+"</b></font> (<font color='green'>/boot/config/plugins/user.scripts/scripts/"+scriptName+"</font>)?",
+    title: "Delete Script?",
+    type: "warning",
+    showCancelButton: true,
+    closeOnConfirm: true,
+    html: true
+  },function(){
+    $.post(URL,{action:'deleteScript',scriptName:scriptName},function(data) {
+      if (data) {
+        location.reload();
+      }
+    });
+  });
+}
+
 function showCredits() {
   myAlert("User Scripts","<?=$caCredits?>","/plugins/user.scripts/images/icon-exec.png","96x96", true, false, true);
 }
@@ -483,7 +502,7 @@ function parseINIString(data){
 <?=$o?>
 </table>
 <br>
-<span class='tipsterallowed'><input type='button' value='Add New Script' onclick='addScript();'><span><br>
+<span class='tipsterallowed' hidden><input type='button' value='Add New Script' onclick='addScript();'><span><br>
 <?=$scheduleScript?>
 <span id='testing'></span>
 <span id='backgroundScript'></span>

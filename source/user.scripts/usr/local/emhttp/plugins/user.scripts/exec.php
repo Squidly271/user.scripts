@@ -227,6 +227,16 @@ switch ($_POST['action']) {
     file_put_contents("$folder/script","#!/bin/bash\n");
     echo "ok";
     break;
+  case 'deleteScript':
+    $scriptName = isset($_POST['scriptName']) ? urldecode(($_POST['scriptName'])) : "";
+    if ( ! $scriptName ) {
+      echo "huh?";
+      break;
+    }
+    $folderName = "/boot/config/plugins/user.scripts/scripts/$scriptName";
+    exec("rm -rf ".escapeshellarg($folderName));
+    echo "deleted";
+    break;
 }
 
 ?>
