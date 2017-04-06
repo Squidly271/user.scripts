@@ -49,7 +49,7 @@ foreach ($userScripts as $script) {
     $description = str_replace("\r","",$description);
     $description = str_replace("\n","<br>",$description);
   } else {
-    $description = $variables['description'] ? $variables['description'] : "No description (/boot/config/plugins/user.scripts/scripts/$script)";
+    $description = $variables['description'] ? $variables['description'] : "No description<br>(/boot/config/plugins/user.scripts/scripts/$script)";
   }
   $o .= "<span class='ca_descEdit' data-scriptName=".escapeshellarg($script)." id='desc$id'>$description</span>";
   $o .= "</td>";

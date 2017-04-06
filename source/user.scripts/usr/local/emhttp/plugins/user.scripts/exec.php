@@ -219,12 +219,16 @@ switch ($_POST['action']) {
   case 'addScript':
     $scriptName = isset($_POST['scriptName']) ? urldecode(($_POST['scriptName'])) : "";
     $folder = "/boot/config/plugins/user.scripts/scripts/$scriptName";
-    if ( is_dir($folder) ) {
-      echo "folder exists";
-      break;
+    while ( true ) {
+      if ( is_dir($folder) ) {
+        $folder .= mt_rand();
+      } else {
+        break;
+      }
     }
     exec("mkdir -p ".escapeshellarg($folder));
     file_put_contents("$folder/script","#!/bin/bash\n");
+    file_put_contents("$folder/name",$scriptName);
     echo "ok";
     break;
   case 'deleteScript':
