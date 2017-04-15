@@ -2,8 +2,8 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "user.scripts">
 <!ENTITY author    "Andrew Zawadzki">
-<!ENTITY version   "2017.04.06a">
-<!ENTITY md5       "13122bd4d656e637ee32597e5fc32188">
+<!ENTITY version   "2017.04.15">
+<!ENTITY md5       "59c2390c7965777fc762ad1960a620a1">
 <!ENTITY launch    "Settings/Userscripts">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
 <!ENTITY github    "Squidly271/user.scripts">
@@ -13,6 +13,10 @@
 <PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;">
 
 <CHANGES>
+###2017.04.15
+- Fixed: After cancelled edit, a new edit would bring up original contents
+- Fixed: + signs being converted to spaces when saving a script
+
 ###2017.04.06a
 - Better handling of duplicate folder names when adding scripts
 

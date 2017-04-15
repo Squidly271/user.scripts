@@ -348,10 +348,11 @@ function editScript(myID) {
   var origID = myID;
   $("#"+myID).tooltipster("close");
   var script = $("#"+myID).attr("data-scriptname");
-  $("#editScriptName").html(script);
   $.post(URL,{action:'getScript',script:script},function(data) {
     if (data) {
+      $("#editScriptName").html(script);
       $("#editScript").html(data);
+      $("#editScript").val(data);
       $(".editing").show();
     }
   });
@@ -554,6 +555,6 @@ Note that you do NOT have to have any or all of the lines contained within any p
 <div class='editing' hidden>
 <center><b>Editing /boot/config/plugins/user.scripts/scripts/<span id='editScriptName'></span>/script</b><br>
 <input type='button' value='Cancel' onclick='cancelEdit();'><input type='button' onclick='saveEdit();' value='Save Changes'><br>
-<textarea id='editScript' style='width:800px; height:500px; border-color:red; font-family:monospace;'></textarea>
+<textarea class='editing' id='editScript' style='width:800px; height:500px; border-color:red; font-family:monospace;'></textarea>
 </center>
 </div>

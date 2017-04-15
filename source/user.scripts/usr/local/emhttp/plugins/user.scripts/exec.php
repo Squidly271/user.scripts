@@ -212,7 +212,7 @@ switch ($_POST['action']) {
     break;
   case 'saveScript':
     $script = isset($_POST['script']) ? urldecode(($_POST['script'])) : "";
-    $scriptContents = isset($_POST['scriptContents']) ? urldecode(($_POST['scriptContents'])) : "";
+    $scriptContents = isset($_POST['scriptContents']) ? $_POST['scriptContents'] : "";
     file_put_contents("/boot/config/plugins/user.scripts/scripts/$script/script",$scriptContents);
     echo "/boot/config/plugins/user.scripts/scripts/$script/script saved";
     break;
