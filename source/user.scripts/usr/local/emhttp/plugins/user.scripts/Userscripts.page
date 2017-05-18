@@ -111,7 +111,6 @@ function abortScript(name) {
     html: true
   },
   function() {
-    
     $.post(URL,{action:"abortScript",name:name});
     swal({
       title: "Aborted!",
@@ -330,7 +329,7 @@ function editName(myID) {
   var currentName = $("#"+myID).html();
   $("#"+myID).attr("data-originalName",currentName);
   $("#"+myID).html("<input type='text' id='newName"+myID+"' value='"+currentName+"'><br><font color='red' size='4'><i class='fa fa-times' aria-hidden='true' style='cursor:pointer' onclick='cancelName(&quot;"+myID+"&quot;);'></i>&nbsp;&nbsp;<font color='green' size='4'><i style='cursor:pointer' onclick='applyName(&quot;"+myID+"&quot;);' class='fa fa-check' aria-hidden='true'></i></font>");
-  $("#"+myID).toolstipers("close");
+  $("#"+myID).tooltipster("close");
   $("#"+myID).tooltipster("disable");
 }
 
