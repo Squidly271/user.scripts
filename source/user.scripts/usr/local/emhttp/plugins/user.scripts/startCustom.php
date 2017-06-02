@@ -13,10 +13,9 @@ exec("mkdir -p /tmp/user.scripts/running");
 exec("mkdir -p /tmp/user.scripts/tmpScripts");
 
 if ( ! is_file($command) ) {
-  logger("User Scripts: $command not found");
+#  logger("User Scripts: $command not found");
   exit();
 }
-
 $unRaidVars = parse_ini_file("/var/local/emhttp/var.ini");
 
 $variables = getScriptVariables($path);
