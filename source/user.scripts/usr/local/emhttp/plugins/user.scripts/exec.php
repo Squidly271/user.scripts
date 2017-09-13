@@ -218,7 +218,13 @@ switch ($_POST['action']) {
     break;
   case 'addScript':
     $scriptName = isset($_POST['scriptName']) ? urldecode(($_POST['scriptName'])) : "";
-    $folder = "/boot/config/plugins/user.scripts/scripts/$scriptName";
+		$folderName = str_replace('"',"",$scriptName);
+		$folderName = str_replace("'","",$folderName);
+		$folderName = str_replacE("&","",$folderName);
+		$folderName = str_replace("(","",$folderName);
+		$folderName = str_replace(")","",$folderName);
+		$folderName = preg_replace("/ {2,}/", " ", $folderName);
+    $folder = "/boot/config/plugins/user.scripts/scripts/$folderName";
     while ( true ) {
       if ( is_dir($folder) ) {
         $folder .= mt_rand();

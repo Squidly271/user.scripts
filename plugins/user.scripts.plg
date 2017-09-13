@@ -2,8 +2,8 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "user.scripts">
 <!ENTITY author    "Andrew Zawadzki">
-<!ENTITY version   "2017.06.02">
-<!ENTITY md5       "b50848c3d2b53a9a4adf7fe761553ac7">
+<!ENTITY version   "2017.09.13">
+<!ENTITY md5       "eb202bf110dbc4179f4a7fa782813787">
 <!ENTITY launch    "Settings/Userscripts">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
 <!ENTITY github    "Squidly271/user.scripts">
@@ -13,6 +13,9 @@
 <PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;">
 
 <CHANGES>
+###2017.09.13
+- Handle special characters when adding a new script
+
 ###2017.06.02
 - Suppress script not found error on custom cron schedules if user manually deletes the script
 
