@@ -43,7 +43,7 @@ foreach ($userScripts as $script) {
   $id = str_replace(".","-",$script);
   $id = str_replace(" ","",$id);
   $o .= "<tr><td width='30%'>";
-  $o .= "<font size='2'><b><span class='ca_nameEdit' id='name$id' data-scriptName=".escapeshellarg($script).">$scriptName</span></b></font><br>";
+  $o .= "<font size='2'><b><a class='ca_nameEdit' id='name$id' data-scriptName=".escapeshellarg($script)." style='cursor:pointer;'>$scriptName</a></b></font><br>";
   if ( is_file("/boot/config/plugins/user.scripts/scripts/$script/description") ) {
     $description = @file_get_contents("/boot/config/plugins/user.scripts/scripts/$script/description");
     $description = str_replace("\r","",$description);
@@ -266,7 +266,6 @@ $(function() {
     $('.ca_credits').tooltipster({
       trigger: 'custom',
       triggerOpen: {mouseenter:true},
-      triggerClose:{click:true,scroll:true,mouseleave:true},
       contentAsHTML: true,
       maxWidth:550,
       minWidth:550,
@@ -288,23 +287,21 @@ $(function() {
       maxWidth:550,
       minWidth:550,
       animation: 'grow',
-      triggerClose:{click:false,scroll:true,mouseleave:true},
       interactive: true,
       viewportAware: true,
       functionBefore: function(instance,helper) {
         var origin = $(helper.origin);
         var myID = origin.attr('id');
-        instance.content("Custom schedule format (standard cron entry):<br><tt>┌───────────── minute (0 - 59)<br></tt><tt>│ ┌───────────── hour (0 - 23)<br></tt><tt>│ │ ┌───────────── day of month (1 - 31)<br></tt><tt>│ │ │ ┌───────────── month (1 - 12)<br></tt><tt>│ │ │ │ ┌───────────── day of week (0 - 6) (Sunday to Saturday)<br></tt><tt>│ │ │ │ │<br></tt><tt>│ │ │ │ │<br></tt><tt>│ │ │ │ │<br></tt><tt>* * * * *</tt><br>See <a href='https://en.wikipedia.org/wiki/Cron' target='_blank'>HERE</a> for examples.  Or <a href='http://corntab.com/' target='_blank'>HERE</a> for an online generator");
+        instance.content("Custom schedule format (standard cron entry):<br><tt>┌───────────── minute (0 - 59)<br></tt><tt>│ ┌───────────── hour (0 - 23)<br></tt><tt>│ │ ┌───────────── day of month (1 - 31)<br></tt><tt>│ │ │ ┌───────────── month (1 - 12)<br></tt><tt>│ │ │ │ ┌───────────── day of week (0 - 6) (Sunday to Saturday)<br></tt><tt>│ │ │ │ │<br></tt><tt>│ │ │ │ │<br></tt><tt>│ │ │ │ │<br></tt><tt>* * * * *</tt><br>See <a href='https://en.wikipedia.org/wiki/Cron' target='_blank'>HERE</a> for examples.  Or <a href='https://corntab.com/' target='_blank'>HERE</a> for an online generator");
       }
     });  
     $('.ca_nameEdit').tooltipster({
       trigger: 'custom',
-      triggerOpen: {mouseenter:true},
-      triggerClose:{click:true,scroll:true,mouseleave:true},
+      triggerOpen: {click:true},
+      triggerClose:{click:true,scroll:true,mouseleave:false},
       delay: 1000,
       contentAsHTML: true,
       animation: 'grow',
-      triggerClose:{click:true,scroll:true,mouseleave:true},
       interactive: true,
       viewportAware: true,
       functionBefore: function(instance,helper) {
@@ -443,10 +440,6 @@ function deleteScript(myID) {
   });
 }
 
-function showCredits() {
-  myAlert("User Scripts","<?=$caCredits?>","/plugins/user.scripts/images/icon-exec.png","96x96", true, false, true);
-}
-
 function myAlert(description,textdescription,textimage,imagesize, outsideClick, showCancel, showConfirm, alertType) {
   if ( !outsideClick ) outsideClick = false;
   if ( !showCancel )   showCancel = false;
@@ -496,7 +489,14 @@ function parseINIString(data){
 }
 </script>
 
-<span class='tipsterallowed' hidden><font size='2' color='purple'>For more editing options, hover over any script's name</font></span><br>
+<div class='editing' hidden>
+<center><b>Editing /boot/config/plugins/user.scripts/scripts/<span id='editScriptName'></span>/script</b><br>
+<input type='button' value='Cancel' onclick='cancelEdit();'><input type='button' onclick='saveEdit();' value='Save Changes'><br>
+<textarea class='editing' id='editScript' style='width:800px; height:500px; border-color:red; font-family:monospace;'></textarea>
+</center>
+</div>
+
+<span class='tipsterallowed' hidden><font size='2' color='purple'>For more editing options, click on any script's name</font></span><br>
 <table class='tablesorter'>
 <?=$o?>
 </table>
@@ -545,15 +545,9 @@ Note that you do NOT have to have any or all of the lines contained within any p
 </span>
 <div id='upgradeAvailable' hidden><center> <font color='red'>An updated version of User Scripts is Available.</font></div>
 
-<a class='ca_cron' href='http://www.corntab.com/' target='_blank'>What Is Cron</a><a class='ca_credits' style='float:right;cursor:pointer' onclick='showCredits();'>Credits</a>
+<a class='ca_cron' href='http://www.corntab.com/' target='_blank'>What Is Cron</a><a class='ca_credits' style='float:right;cursor:pointer'>Credits</a>
 <center>For help with this plugin, visit <a href='http://lime-technology.com/forum/index.php?topic=49992.0' target='_blank'>HERE</a></center>
 
 
 <span id='debugging'></span>
 
-<div class='editing' hidden>
-<center><b>Editing /boot/config/plugins/user.scripts/scripts/<span id='editScriptName'></span>/script</b><br>
-<input type='button' value='Cancel' onclick='cancelEdit();'><input type='button' onclick='saveEdit();' value='Save Changes'><br>
-<textarea class='editing' id='editScript' style='width:800px; height:500px; border-color:red; font-family:monospace;'></textarea>
-</center>
-</div>
