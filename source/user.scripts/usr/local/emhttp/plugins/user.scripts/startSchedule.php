@@ -30,6 +30,10 @@ foreach ($schedules as $scheduledScript) {
     if ( $variables['foregroundOnly'] ) {
       continue;
     }
+		if ( $variables['noParity'] && $unRaidVars['mdResyncPos'] ) {
+			logger("Parity Check / rebuild in progress.  Not executing $path per variable setting.");
+			continue;
+		}
     $newPath = str_replace("/boot/config/plugins/user.scripts/scripts/","/tmp/user.scripts/tmpScripts/",$path);
     $newPath = str_replace("/usr/local/emhttp/plugins/user.scripts/scripts/","/tmp/user.scripts/tmpScripts/",$newPath);
     exec("mkdir -p ".escapeshellarg(dirname($newPath)));

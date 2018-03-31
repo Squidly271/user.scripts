@@ -2,8 +2,8 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "user.scripts">
 <!ENTITY author    "Andrew Zawadzki">
-<!ENTITY version   "2018.02.16">
-<!ENTITY md5       "555612b2947d480dbe9d2b088eff9709">
+<!ENTITY version   "2018.03.31">
+<!ENTITY md5       "12b91fbc945c99aeffaa4ae820d39eaf">
 <!ENTITY launch    "Settings/Userscripts">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
 <!ENTITY github    "Squidly271/user.scripts">
@@ -13,6 +13,9 @@
 <PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.3.3">
 
 <CHANGES>
+###2018.03.31
+- Support inline variable to disallow execution of scheduled script if a parity check / rebuild is in progress
+
 ###2018.02.16
 - Some UI changes (more intuitive)
 - Fix CornTab link
