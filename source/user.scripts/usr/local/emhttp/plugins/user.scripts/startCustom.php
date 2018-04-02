@@ -17,10 +17,10 @@ if ( ! is_file($command) ) {
   exit();
 }
 $unRaidVars = parse_ini_file("/var/local/emhttp/var.ini");
+$variables = getScriptVariables($command);
 
-$variables = getScriptVariables($path);
 if ( $variables['arrayStarted'] && $unRaidVars['mdState'] != "STARTED" ) {
-  logger("$path requires array to be started to run");
+  logger("$command requires array to be started to run");
   exit();
 }
 if ( $variables['foregroundOnly'] ) {
@@ -28,7 +28,7 @@ if ( $variables['foregroundOnly'] ) {
 }
 
 if ( $variables['noParity'] && $unRaidVars['mdResyncPos'] ) {
-	logger("Parity Check / rebuild in progress.  Not executing $path per variable setting.");
+	logger("Parity Check / rebuild in progress.  Not executing $command per variable setting.");
 	exit();
 }
 $newPath = str_replace("/boot/config/plugins/user.scripts/scripts/","/tmp/user.scripts/tmpScripts/",$command);
