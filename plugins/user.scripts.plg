@@ -2,8 +2,8 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "user.scripts">
 <!ENTITY author    "Andrew Zawadzki">
-<!ENTITY version   "2018.04.02">
-<!ENTITY md5       "7b7e3ecde729a1522e7419ba644127bc">
+<!ENTITY version   "2018.10.08">
+<!ENTITY md5       "7fb718103183799dda2379df94042a62">
 <!ENTITY launch    "Settings/Userscripts">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
 <!ENTITY github    "Squidly271/user.scripts">
@@ -13,6 +13,9 @@
 <PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.3.3">
 
 <CHANGES>
+###2018.10.08
+- Remove debugging code
+
 ###2018.04.02
 - Fix regression error on inline variables and custom scheduled scripts
 

@@ -60,13 +60,11 @@ function getScriptVariables($filename) {
 	$booleans = ['foregroundOnly','backgroundOnly','arrayStarted','clearLog','noParity','directPHP'];
 	$vars = getRawVariables($filename);
 	
-	file_put_contents("/tmp/blah",print_r($vars,true),FILE_APPEND);
 	foreach (array_keys($vars) as $key) {
 		if ( in_array($key,$booleans) ) {
 			$vars[$key] = filter_var($vars[$key],FILTER_VALIDATE_BOOLEAN);
 		}
 	}
-	file_put_contents("/tmp/blah",print_r($vars,true));
   return $vars;
 }
 
