@@ -2,8 +2,8 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "user.scripts">
 <!ENTITY author    "Andrew Zawadzki">
-<!ENTITY version   "2018.10.08">
-<!ENTITY md5       "7fb718103183799dda2379df94042a62">
+<!ENTITY version   "2018.10.19">
+<!ENTITY md5       "a212e6e6c0e0a15168e76b56cfb91b2f">
 <!ENTITY launch    "Settings/Userscripts">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
 <!ENTITY github    "Squidly271/user.scripts">
@@ -13,6 +13,9 @@
 <PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.3.3">
 
 <CHANGES>
+###2018.10.19
+- Fix broken pipe
+
 ###2018.10.08
 - Remove debugging code
 
@@ -174,7 +177,7 @@ The 'post-install' script
 -->
 <FILE Run="/bin/bash">
 <INLINE>
-rm -f $(ls /boot/config/plugins/&name;/&name;*.txz 2>/dev/null|grep -v '&version;')
+rm -f $(ls /boot/config/plugins/&name;/&name;*.txz 2>/dev/null &#124; grep -v '&version;')
 cp /usr/local/emhttp/plugins/user.scripts/cron/user.script.start.daily.sh /etc/cron.daily
 cp /usr/local/emhttp/plugins/user.scripts/cron/user.script.start.hourly.sh /etc/cron.hourly
 cp /usr/local/emhttp/plugins/user.scripts/cron/user.script.start.weekly.sh /etc/cron.weekly
