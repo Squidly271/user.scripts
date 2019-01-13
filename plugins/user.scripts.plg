@@ -2,8 +2,8 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "user.scripts">
 <!ENTITY author    "Andrew Zawadzki">
-<!ENTITY version   "2018.10.19">
-<!ENTITY md5       "a212e6e6c0e0a15168e76b56cfb91b2f">
+<!ENTITY version   "2019.01.13">
+<!ENTITY md5       "0a680d7bcf1737b8d4bd1c2ae08de0d8">
 <!ENTITY launch    "Settings/Userscripts">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
 <!ENTITY github    "Squidly271/user.scripts">
@@ -13,6 +13,9 @@
 <PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.3.3">
 
 <CHANGES>
+###2019.01.13
+- Update Icons
+
 ###2018.10.19
 - Fix broken pipe
 
