@@ -43,7 +43,7 @@ foreach ($userScripts as $script) {
   $id = str_replace(".","-",$script);
   $id = str_replace(" ","",$id);
   $o .= "<tr><td width='30%'>";
-  $o .= "<font size='2'><b><a class='ca_nameEdit' id='name$id' data-scriptName=".escapeshellarg($script)." style='cursor:pointer;'>$scriptName</a></b></font><br>";
+  $o .= "<font size='2'><b><span class='ca_nameEdit' id='name$id' data-scriptName=".escapeshellarg($script)." style='cursor:pointer;color:#ff8c2f;'>$scriptName</span></b></font><br>";
   if ( is_file("/boot/config/plugins/user.scripts/scripts/$script/description") ) {
     $description = @file_get_contents("/boot/config/plugins/user.scripts/scripts/$script/description");
     $description = str_replace("\r","",$description);
@@ -260,6 +260,10 @@ function applySchedule() {
 }
 
 $(function() {
+	if ( typeof caPluginUpdateCheck === "function" ) {
+		caPluginUpdateCheck("user.scripts.plg",{name:"User Scripts"});
+	}
+
   if ( "<?=$toolTipsterAllowed?>" == "true" ) {
     $(".tipsterallowed").show();
     $('.ca_tooltip').tooltipster({delay:[1000,1],timer:15000, animation:'grow', arrow:true, trigger:'custom', triggerOpen:{mouseenter: true}, triggerClose:{click:true,scroll:true,mouseleave:true}});
@@ -297,8 +301,8 @@ $(function() {
     });  
     $('.ca_nameEdit').tooltipster({
       trigger: 'custom',
-      triggerOpen: {click:true},
-      triggerClose:{click:true,scroll:true,mouseleave:false},
+      triggerOpen: {click:true,touchstart:true,mouseenter:true},
+      triggerClose:{click:true,scroll:false,mouseleave:true},
       delay: 1000,
       contentAsHTML: true,
       animation: 'grow',
@@ -496,7 +500,7 @@ function parseINIString(data){
 </center>
 </div>
 
-<span class='tipsterallowed' hidden><font size='2' color='purple'>For more editing options, click on any script's name</font></span><br>
+<span class='tipsterallowed' hidden><font size='2' color='#ff8c2f'>For more editing options, click on any script's name</font></span><br>
 <table class='tablesorter'>
 <?=$o?>
 </table>

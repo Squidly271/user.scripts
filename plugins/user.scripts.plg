@@ -2,8 +2,8 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "user.scripts">
 <!ENTITY author    "Andrew Zawadzki">
-<!ENTITY version   "2019.01.13a">
-<!ENTITY md5       "93c852aa3f6a802c1d1996a7f894e877">
+<!ENTITY version   "2019.05.05">
+<!ENTITY md5       "a85c1ed544327344d755d4bf70ca4739">
 <!ENTITY launch    "Settings/Userscripts">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
 <!ENTITY github    "Squidly271/user.scripts">
@@ -13,6 +13,10 @@
 <PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.3.3" icon="file-text-o">
 
 <CHANGES>
+###2019.05.05
+- Implement CA update check API
+- Fixed: Touch on name wouldn't bring up edit menu
+
 ###2019.01.13
 - Update Icons
 
