@@ -16,12 +16,6 @@ exec("mkdir -p /boot/config/plugins/user.scripts/scripts");
 exec("mkdir -p /tmp/user.scripts/running");
 exec("mkdir -p /tmp/user.scripts/finished");
 
-$installedVersion = exec("/usr/local/emhttp/plugins/dynamix.plugin.manager/scripts/plugin version /var/log/plugins/user.scripts.plg");
-if ( is_file("/tmp/plugins/community.applications.plg") ) {
-  $upgradeVersion = exec("/usr/local/emhttp/plugins/dynamix.plugin.manager/scripts/plugin version /tmp/plugins/user.scripts.plg");
-} else {
-  $upgradeVersion = "0";
-}
 
 $vars = parse_ini_file("/var/local/emhttp/var.ini");
 $toolTipsterAllowed = version_compare($vars['version'],"6.3.3",">=") ? "true" : "false";
@@ -496,7 +490,7 @@ function parseINIString(data){
 <div class='editing' hidden>
 <center><b>Editing /boot/config/plugins/user.scripts/scripts/<span id='editScriptName'></span>/script</b><br>
 <input type='button' value='Cancel' onclick='cancelEdit();'><input type='button' onclick='saveEdit();' value='Save Changes'><br>
-<textarea class='editing' id='editScript' style='width:800px; height:500px; border-color:red; font-family:monospace;'></textarea>
+<textarea class='editing' id='editScript' style='width:90%; height:500px; border-color:red; font-family:monospace;'></textarea>
 </center>
 </div>
 
@@ -547,9 +541,8 @@ Note that you do NOT have to have any or all of the lines contained within any p
 <br>
 *PHP scripters:  You can also place these variable lines immediately after the <? or <?PHP line<br>
 </span>
-<div id='upgradeAvailable' hidden><center> <font color='red'>An updated version of User Scripts is Available.</font></div>
 
-<a class='ca_cron' href='http://www.corntab.com/' target='_blank'>What Is Cron</a><a class='ca_credits' style='float:right;cursor:pointer'>Credits</a>
+<a class='ca_cron' href='https://corntab.com/' target='_blank'>What Is Cron</a><a class='ca_credits' style='float:right;cursor:pointer'>Credits</a>
 <center>For help with this plugin, visit <a href='http://lime-technology.com/forum/index.php?topic=49992.0' target='_blank'>HERE</a></center>
 
 
