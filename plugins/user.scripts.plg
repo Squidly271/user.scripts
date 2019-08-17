@@ -2,8 +2,8 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "user.scripts">
 <!ENTITY author    "Andrew Zawadzki">
-<!ENTITY version   "2019.06.16">
-<!ENTITY md5       "f8996384f3eca63f7c067669b0a4ff03">
+<!ENTITY version   "2019.08.17">
+<!ENTITY md5       "0fdd411633388f774d063c55bbd6c4d6">
 <!ENTITY launch    "Settings/Userscripts">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
 <!ENTITY github    "Squidly271/user.scripts">
@@ -13,6 +13,9 @@
 <PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.3.3" icon="file-text-o">
 
 <CHANGES>
+###2019.08.17
+- Remove all non-ASCII characters from editing window prior to saving (everything over 0x7F)
+
 ###2019.06.16
 - Larger script editing window
 - Remove some unused code
