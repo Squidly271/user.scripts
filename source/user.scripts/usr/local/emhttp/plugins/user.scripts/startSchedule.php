@@ -45,11 +45,7 @@ foreach ($schedules as $scheduledScript) {
     file_put_contents($newPath,$script);
     exec("chmod +x ".escapeshellarg($newPath));
 
-    if ( $selectedSchedule == "start" || $selectedSchedule == "stop" ) {
-      $command = '/usr/local/emhttp/plugins/user.scripts/startBackground.php "'.$newPath.'" > /dev/null 2>&1';
-    } else {
-      $command = '/usr/local/emhttp/plugins/user.scripts/backgroundScript.sh "'.$newPath.'" >/dev/null 2>&1';
-    }
+    $command = '/usr/local/emhttp/plugins/user.scripts/backgroundScript.sh "'.$newPath.'" >/dev/null 2>&1';
 
     echo $command;
     exec($command);
