@@ -18,7 +18,6 @@ exec("mkdir -p /tmp/user.scripts/finished");
 
 
 $vars = parse_ini_file("/var/local/emhttp/var.ini");
-$toolTipsterAllowed = version_compare($vars['version'],"6.3.3",">=") ? "true" : "false";
 
 $userScripts = @array_diff(@scandir("/boot/config/plugins/user.scripts/scripts"),array(".",".."));
 if ( ! is_array($userScripts) ) {
@@ -36,8 +35,8 @@ foreach ($userScripts as $script) {
   }
   $id = str_replace(".","-",$script);
   $id = str_replace(" ","",$id);
-  $o .= "<tr><td width='30%'>";
-  $o .= "<font size='2'><b><span class='ca_nameEdit' id='name$id' data-scriptName=".escapeshellarg($script)." style='cursor:pointer;color:#ff8c2f;'>$scriptName</span></b></font><br>";
+  $o .= "<tr><td width='30%' style='text-align:initial'>";
+  $o .= "<font size='2'><span class='ca_nameEdit' id='name$id' data-scriptName=".escapeshellarg($script)." style='font-size:1.9rem;cursor:pointer;color:#ff8c2f;'><i class='fa fa-gear'></i></span>&nbsp;&nbsp;<b><span style='color:#ff8c2f;'>$scriptName</span>&nbsp;</b></font><br>";
   if ( is_file("/boot/config/plugins/user.scripts/scripts/$script/description") ) {
     $description = @file_get_contents("/boot/config/plugins/user.scripts/scripts/$script/description");
     $description = str_replace("\r","",$description);
@@ -70,9 +69,9 @@ foreach ($userScripts as $script) {
   } else {
     $o .= "<td width=10%></td><td width=15%></td>";
   }
-  $o .= "<td><img class='ca_tooltip' src='/plugins/user.scripts/images/log.png' height='30px' id='log$id' onclick='showLog(&quot;$script&quot;);' style='display:none;cursor:pointer' title='Show Log'>";
-  $o .= "&nbsp;<img class='ca_tooltip' src='/plugins/user.scripts/images/download.png' height='30px' id='download$id' style='display:none;cursor:pointer;' title='Download Log' onclick='downloadLog(&quot;$script&quot;);'>";
-  $o .= "&nbsp;<img class='ca_tooltip' src='/plugins/user.scripts/images/delete-24.png' height='30px' id='trash$id' onclick='deleteLog(&quot;$script&quot;);'  style='display:none;cursor:pointer' title='Delete Log File'>";
+  $o .= "<td><i class='ca_tooltip fa fa-file-o' id='log$id' onclick='showLog(&quot;$script&quot;);' style='display:none;cursor:pointer;font-size:2rem;color:#ff8c2f;' title='Show Log'></i>";
+  $o .= "&nbsp;&nbsp;&nbsp;<i class='ca_tooltip fa fa-download' id='download$id' style='display:none;cursor:pointer;font-size:2rem;color:#ff8c2f;' title='Download Log' onclick='downloadLog(&quot;$script&quot;);'></i>";
+  $o .= "&nbsp;&nbsp;&nbsp;<i class='ca_tooltip fa fa-trash' id='trash$id' onclick='deleteLog(&quot;$script&quot;);'  style='display:none;cursor:pointer;font-size:2rem;color:#ff8c2f;' title='Delete Log File'></i>";
   $o .= "</td>";
   $o .= "<td><font color='red'><span id='status$id'></span></font>";
   $o .= "</tr>";
@@ -258,59 +257,58 @@ $(function() {
 		caPluginUpdateCheck("user.scripts.plg",{name:"User Scripts"});
 	}
 
-  if ( "<?=$toolTipsterAllowed?>" == "true" ) {
-    $(".tipsterallowed").show();
-    $('.ca_tooltip').tooltipster({delay:[1000,1],timer:15000, animation:'grow', arrow:true, trigger:'custom', triggerOpen:{mouseenter: true}, triggerClose:{click:true,scroll:true,mouseleave:true}});
-    $('.ca_credits').tooltipster({
-      trigger: 'custom',
-      triggerOpen: {mouseenter:true},
-      contentAsHTML: true,
-      maxWidth:550,
-      minWidth:550,
-      animation: 'grow',
-      triggerClose:{click:false,scroll:true,mouseleave:true},
-      interactive: true,
-      viewportAware: true,
-      functionBefore: function(instance,helper) {
-        var origin = $(helper.origin);
-        var myID = origin.attr('id');
-        instance.content("<div style='overflow:scroll; max-height:350px; height:550px; overflow-x:hidden; overflow-y:auto;'><center><img src='/plugins/user.scripts/images/user.scripts.png' width=96px><br><font size='6' color='white'>CA User Scripts</font><br><br><?=$caCredits?></div>");
-      }
-    });  
-    $('.ca_cron').tooltipster({
-      trigger: 'custom',
-      triggerOpen: {mouseenter:true},
-      triggerClose:{click:true,scroll:true,mouseleave:true},
-      contentAsHTML: true,
-      maxWidth:550,
-      minWidth:550,
-      animation: 'grow',
-      interactive: true,
-      viewportAware: true,
-      functionBefore: function(instance,helper) {
-        var origin = $(helper.origin);
-        var myID = origin.attr('id');
-        instance.content("Custom schedule format (standard cron entry):<br><tt>┌───────────── minute (0 - 59)<br></tt><tt>│ ┌───────────── hour (0 - 23)<br></tt><tt>│ │ ┌───────────── day of month (1 - 31)<br></tt><tt>│ │ │ ┌───────────── month (1 - 12)<br></tt><tt>│ │ │ │ ┌───────────── day of week (0 - 6) (Sunday to Saturday)<br></tt><tt>│ │ │ │ │<br></tt><tt>│ │ │ │ │<br></tt><tt>│ │ │ │ │<br></tt><tt>* * * * *</tt><br>See <a href='https://en.wikipedia.org/wiki/Cron' target='_blank'>HERE</a> for examples.  Or <a href='https://corntab.com/' target='_blank'>HERE</a> for an online generator");
-      }
-    });  
-    $('.ca_nameEdit').tooltipster({
-      trigger: 'custom',
-      triggerOpen: {click:true,touchstart:true,mouseenter:true},
-      triggerClose:{click:true,scroll:false,mouseleave:true},
-      delay: 1000,
-      contentAsHTML: true,
-      animation: 'grow',
-      interactive: true,
-      viewportAware: true,
-      functionBefore: function(instance,helper) {
-        var origin = $(helper.origin);
-        var myID = origin.attr('id');
-        var name = $("#"+myID).html();
-        var scriptName = $("#"+myID).attr("data-scriptname");
-        instance.content("/boot/config/plugins/user.scripts/scripts/"+scriptName + "<br><center><input type='button' value='Edit Name' onclick='editName(&quot;"+myID+"&quot;);'><input type='button' value='Edit Description' onclick='editDesc(&quot;"+myID+"&quot;);'><input type='button' onclick='editScript(&quot;"+myID+"&quot;);' value='Edit Script'><input type='button' onclick='deleteScript(&quot;"+myID+"&quot;);' value='Delete Script'></center>");
-      }
-    });
-  }
+	$(".tipsterallowed").show();
+	$('.ca_tooltip').tooltipster({delay:[1000,1],timer:15000, animation:'grow', arrow:true, trigger:'custom', triggerOpen:{mouseenter: true}, triggerClose:{click:true,scroll:true,mouseleave:true}});
+	$('.ca_credits').tooltipster({
+		trigger: 'custom',
+		triggerOpen: {mouseenter:true},
+		contentAsHTML: true,
+		maxWidth:550,
+		minWidth:550,
+		animation: 'grow',
+		triggerClose:{click:false,scroll:true,mouseleave:true},
+		interactive: true,
+		viewportAware: true,
+		functionBefore: function(instance,helper) {
+			var origin = $(helper.origin);
+			var myID = origin.attr('id');
+			instance.content("<div style='overflow:scroll; max-height:350px; height:550px; overflow-x:hidden; overflow-y:auto;'><center><img src='/plugins/user.scripts/images/user.scripts.png' width=96px><br><font size='6' color='white'>CA User Scripts</font><br><br><?=$caCredits?></div>");
+		}
+	});  
+	$('.ca_cron').tooltipster({
+		trigger: 'custom',
+		triggerOpen: {mouseenter:true},
+		triggerClose:{click:true,scroll:true,mouseleave:true},
+		contentAsHTML: true,
+		maxWidth:550,
+		minWidth:550,
+		animation: 'grow',
+		interactive: true,
+		viewportAware: true,
+		functionBefore: function(instance,helper) {
+			var origin = $(helper.origin);
+			var myID = origin.attr('id');
+			instance.content("Custom schedule format (standard cron entry):<br><tt>┌───────────── minute (0 - 59)<br></tt><tt>│ ┌───────────── hour (0 - 23)<br></tt><tt>│ │ ┌───────────── day of month (1 - 31)<br></tt><tt>│ │ │ ┌───────────── month (1 - 12)<br></tt><tt>│ │ │ │ ┌───────────── day of week (0 - 6) (Sunday to Saturday)<br></tt><tt>│ │ │ │ │<br></tt><tt>│ │ │ │ │<br></tt><tt>│ │ │ │ │<br></tt><tt>* * * * *</tt><br>See <a href='https://en.wikipedia.org/wiki/Cron' target='_blank'>HERE</a> for examples.  Or <a href='https://corntab.com/' target='_blank'>HERE</a> for an online generator");
+		}
+	});  
+	$('.ca_nameEdit').tooltipster({
+		trigger: 'custom',
+		triggerOpen: {click:true,touchstart:true,mouseenter:true},
+		triggerClose:{click:true,scroll:false,mouseleave:true},
+		delay: 1000,
+		contentAsHTML: true,
+		animation: 'grow',
+		interactive: true,
+		viewportAware: true,
+		functionBefore: function(instance,helper) {
+			var origin = $(helper.origin);
+			var myID = origin.attr('id');
+			var name = $("#"+myID).html();
+			var scriptName = $("#"+myID).attr("data-scriptname");
+			instance.content("/boot/config/plugins/user.scripts/scripts/"+scriptName + "<br><center><input type='button' value='Edit Name' onclick='editName(&quot;"+myID+"&quot;);'><input type='button' value='Edit Description' onclick='editDesc(&quot;"+myID+"&quot;);'><input type='button' onclick='editScript(&quot;"+myID+"&quot;);' value='Edit Script'><input type='button' onclick='deleteScript(&quot;"+myID+"&quot;);' value='Delete Script'></center>");
+		}
+	});
+
   
   setInterval(function() {
     checkBackground();
@@ -348,6 +346,7 @@ function editScript(myID) {
       $("#editScript").html(data);
       $("#editScript").val(data);
       $(".editing").show();
+			window.scrollTo(0, 0);
     }
   });
 }
@@ -494,8 +493,8 @@ function parseINIString(data){
 </center>
 </div>
 
-<span class='tipsterallowed' hidden><font size='2' color='#ff8c2f'>For more editing options, click on any script's name</font></span><br>
-<table class='tablesorter'>
+<span class='tipsterallowed' hidden></span><br>
+<table>
 <?=$o?>
 </table>
 <br>

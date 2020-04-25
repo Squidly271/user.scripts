@@ -6,10 +6,10 @@
 ###############################################################
 
 $caCredits = "
-    <center><table align:'center'>
+    <center><table align:'center'  style='background-color:initial;'>
       <tr>
         <td><img src='https://github.com/Squidly271/plugin-repository/raw/master/Chode_300.gif' width='50px';height='48px'></td>
-        <td><strong>Andrew Zawadzki</strong></td>
+        <td style='background-color:initial;'><strong>Andrew Zawadzki</strong></td>
         <td>Main Development</td>
       </tr>
     </table></center>
