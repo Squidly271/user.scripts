@@ -177,7 +177,7 @@ function runScript(path) {
 function actuallyRunScript(path,inputValue) {
   $.post(URL,{action:'convertScript',path:path},function(data) {
     if (data) {
-      openBox('/plugins/user.scripts/startScript.sh&arg1='+data+'&arg2='+inputValue,"Script "+basename(dirname(path))+" Running123",800,1200,true);
+      openBox('/plugins/user.scripts/startScript.sh&arg1='+data+'&arg2='+inputValue,"Script "+basename(dirname(path))+" Running",800,1200,true);
     }
   });
 }
