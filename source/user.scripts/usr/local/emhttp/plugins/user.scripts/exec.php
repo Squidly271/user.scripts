@@ -195,6 +195,7 @@ switch ($_POST['action']) {
     $script = isset($_POST['script']) ? urldecode(($_POST['script'])) : "";
     $newName = isset($_POST['newName']) ? urldecode(($_POST['newName'])) : "";
     file_put_contents("/boot/config/plugins/user.scripts/scripts/$script/name",trim($newName));
+		echo "ok";
     break;
   case 'changeDesc':
     $script = isset($_POST['script']) ? urldecode(($_POST['script'])) : "";
