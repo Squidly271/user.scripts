@@ -14,7 +14,7 @@
 
 <CHANGES>
 ###2020.05.30
-- Fix Name & Description containing HTML when editing
+- Fix Name / Description containing HTML when editing
 
 ###2020.05.11
 - Fix display aberration caused by debugging info
