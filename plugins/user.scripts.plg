@@ -2,8 +2,8 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "user.scripts">
 <!ENTITY author    "Andrew Zawadzki">
-<!ENTITY version   "2020.08.22">
-<!ENTITY md5       "33b5d2085c533f8eca8e0f042494d142">
+<!ENTITY version   "2020.10.21">
+<!ENTITY md5       "d0f5a3534427c2a51b47310a698f7fbc">
 <!ENTITY launch    "Settings/Userscripts">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
 <!ENTITY github    "Squidly271/user.scripts">
@@ -13,6 +13,9 @@
 <PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.3.3" icon="file-text-o">
 
 <CHANGES>
+###2020.10.21
+- Compatibility Fixes
+
 ###2020.08.22
 - Set HOME directory when executing scripts.  Thanks @l4t3b0
 

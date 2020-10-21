@@ -91,7 +91,7 @@ foreach ($schedule as $scriptSchedule) {
 $scheduleScript .= "</script>";
 ?>
 <script>
-var URL = "/plugins/user.scripts/exec.php";
+var caURL = "/plugins/user.scripts/exec.php";
 
 function abortScript(name) {
    swal({
@@ -104,7 +104,7 @@ function abortScript(name) {
     html: true
   },
   function() {
-    $.post(URL,{action:"abortScript",name:name});
+    $.post(caURL,{action:"abortScript",name:name});
     swal({
       title: "Aborted!",
       text: "The script <font color='red'><b>"+name+"</b></font> has been aborted",
@@ -128,7 +128,7 @@ function deleteLog(name) {
     html:true
   },
   function() {
-    $.post(URL,{action:"deleteLog",name:name});
+    $.post(caURL,{action:"deleteLog",name:name});
     swal({
       title: "Deleted",
       text: "The log files from <font color='red'><b>"+name+"</b></font> have been deleted",
@@ -149,7 +149,7 @@ function dirname( path ) {
 }
 
 function runScript(path) {
-  $.post(URL,{action:'getScriptVariablesString',script:path},function(data) {
+  $.post(caURL,{action:'getScriptVariablesString',script:path},function(data) {
     if (data) {
       var variables = new Array();
       variables = parseINIString(data);
@@ -175,7 +175,7 @@ function runScript(path) {
 }
 
 function actuallyRunScript(path,inputValue) {
-  $.post(URL,{action:'convertScript',path:path},function(data) {
+  $.post(caURL,{action:'convertScript',path:path},function(data) {
     if (data) {
       openBox('/plugins/user.scripts/startScript.sh&arg1='+data+'&arg2='+inputValue,"Script "+basename(dirname(path))+" Running",800,1200,true);
     }
@@ -183,7 +183,7 @@ function actuallyRunScript(path,inputValue) {
 }
 
 function directRunScript(path) {
-  $.post(URL,{action:'directRunScript',path:path},function(data) {
+  $.post(caURL,{action:'directRunScript',path:path},function(data) {
     if (data) {
       openBox(data,"Script "+basename(dirname(path))+" Running",800,1200);
     }
@@ -191,7 +191,7 @@ function directRunScript(path) {
 }
 
 function backgroundScript(path,element) {
-  $.post(URL,{action:'getScriptVariables',script:path},function(data) {
+  $.post(caURL,{action:'getScriptVariables',script:path},function(data) {
     if (data) {
       var variables = new Array();
       variables = parseINIString(data);
@@ -205,7 +205,7 @@ function backgroundScript(path,element) {
 }
 
 function downloadLog(script) {
-  $.post(URL,{action:'convertLog',script:script},function(data) {
+  $.post(caURL,{action:'convertLog',script:script},function(data) {
     if (data) {
       window.open('/plugins/user.scripts/log.zip');
     }
@@ -217,7 +217,7 @@ function showLog(script) {
 }
 
 function checkBackground() {
-  $.post(URL,{action:'checkBackground'},function(data) {
+  $.post(caURL,{action:'checkBackground'},function(data) {
     if (data) {
       $("#backgroundScript").html(data);
     }
@@ -244,7 +244,7 @@ function applySchedule() {
     
     schedule.push(newSchedule);
   });
-  $.post(URL,{action:'applySchedule',schedule:schedule}, function(data) {
+  $.post(caURL,{action:'applySchedule',schedule:schedule}, function(data) {
     if (data) {
       $("#testing").html(data);
     }
@@ -346,7 +346,7 @@ function editScript(myID) {
   var origID = myID;
   $("#"+myID).tooltipster("close");
   var script = $("#"+myID).attr("data-scriptname");
-  $.post(URL,{action:'getScript',script:script},function(data) {
+  $.post(caURL,{action:'getScript',script:script},function(data) {
     if (data) {
       $("#editScriptName").html(script);
       $("#editScript").html(data);
@@ -365,7 +365,7 @@ function saveEdit() {
   var script = $("#editScriptName").html();
   var scriptContents = $("#editScript").val();
   
-  $.post(URL,{action:'saveScript',script:script,scriptContents:scriptContents},function(data) {
+  $.post(caURL,{action:'saveScript',script:script,scriptContents:scriptContents},function(data) {
     if (data) {
       $(".editing").hide();
     }
@@ -379,7 +379,7 @@ function applyName(myID) {
   $("#"+myID).html(newName);
   $("#"+myID).tooltipster("enable");
   $("#"+myID).tooltipster("close");
-  $.post(URL,{action:'changeName',script:script,newName:newName},function(data) {
+  $.post(caURL,{action:'changeName',script:script,newName:newName},function(data) {
 		window.location.reload();
 	});
 }
@@ -404,7 +404,7 @@ function applyDesc(myID) {
   newDesc = newDesc.replace(/\n/g, "<br>");
   var script = $("#"+myID).attr("data-scriptname");
   $("#"+myID).html(newDesc);
-  $.post(URL,{action:'changeDesc',script:script,newDesc:newDesc});
+  $.post(caURL,{action:'changeDesc',script:script,newDesc:newDesc});
 }
 
 function addScript() {
@@ -418,7 +418,7 @@ function addScript() {
     closeOnConfirm: true
   },function(inputValue){
     if (inputValue) {
-      $.post(URL,{action:'addScript',scriptName:inputValue},function(data) {
+      $.post(caURL,{action:'addScript',scriptName:inputValue},function(data) {
         if (data) {
           location.reload();
         }
@@ -438,7 +438,7 @@ function deleteScript(myID) {
     closeOnConfirm: true,
     html: true
   },function(){
-    $.post(URL,{action:'deleteScript',scriptName:scriptName},function(data) {
+    $.post(caURL,{action:'deleteScript',scriptName:scriptName},function(data) {
       if (data) {
         location.reload();
       }
