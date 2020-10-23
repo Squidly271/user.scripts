@@ -195,7 +195,7 @@ function backgroundScript(path,element) {
     if (data) {
       var variables = new Array();
       variables = parseINIString(data);
-      $.post(URL,{action:'convertScript',path:path},function(data) {
+      $.post(caURL,{action:'convertScript',path:path},function(data) {
         if (data) {
           openBox('/plugins/user.scripts/backgroundScript.sh&arg1='+data,"Script Running",800,1200);
         }
