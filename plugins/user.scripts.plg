@@ -2,8 +2,8 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "user.scripts">
 <!ENTITY author    "Andrew Zawadzki">
-<!ENTITY version   "2020.10.23">
-<!ENTITY md5       "b8abb274a378ecf65f76f87320f8c958">
+<!ENTITY version   "2020.12.11">
+<!ENTITY md5       "7f899d80a178628fa759af8e052bd425">
 <!ENTITY launch    "Settings/Userscripts">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
 <!ENTITY github    "Squidly271/user.scripts">
@@ -13,6 +13,9 @@
 <PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.3.3" icon="file-text-o">
 
 <CHANGES>
+###2020.12.11
+- Revert removing non-ascii characters
+
 ###2020.10.23
 - Fix regression error: Run in background not working
 
