@@ -2,8 +2,8 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "user.scripts">
 <!ENTITY author    "Andrew Zawadzki">
-<!ENTITY version   "2021.03.10">
-<!ENTITY md5       "96dc8fce794ccbfa196832b4ba031cba">
+<!ENTITY version   "2021.11.28">
+<!ENTITY md5       "9744b9762d39d6a7e1a30fb66240330b">
 <!ENTITY launch    "Settings/Userscripts">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
 <!ENTITY github    "Squidly271/user.scripts">
@@ -13,6 +13,9 @@
 <PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.3.3" icon="file-text-o">
 
 <CHANGES>
+###2021.11.28
+- Fix abort scripts (Thanks @Noim)
+
 ###2021.03.10
 - Permission Fix
 
@@ -230,7 +233,7 @@ cp /usr/local/emhttp/plugins/user.scripts/cron/user.script.start.monthly.sh /etc
 echo ""
 echo "----------------------------------------------------"
 echo " &name; has been installed."
-echo " Copyright 2016-2020, Andrew Zawadzki"
+echo " Copyright 2016-2021, Andrew Zawadzki"
 echo " Version: &version;"
 echo "----------------------------------------------------"
 echo ""
