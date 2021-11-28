@@ -118,12 +118,15 @@ switch ($_POST['action']) {
     $pid = file_get_contents("/tmp/user.scripts/running/$script");
     exec("pkill -TERM -P $pid");
     exec("kill -9 $pid");
-    $emergencyKill = exec("ps aux | grep -i ' /usr/bin/php /tmp/user.scripts/tmpScripts/$script' | grep -v grep");
-    $emergencyKill = str_replace("root","",$emergencyKill);
-    $emergencyKill = trim($emergencyKill);
-    $rawKill = explode(" ",$emergencyKill);
-    logger($rawKill[0]);
-    exec("kill -9 ".$rawKill[0]);
+    $processListOutput = null;
+    exec("ps aux | grep -i '/tmp/user.scripts/tmpScripts/$script' | grep -v grep", $processListOutput);
+    foreach ($processListOutput as $emergencyKill) {
+      $emergencyKill = str_replace("root","",$emergencyKill);
+      $emergencyKill = trim($emergencyKill);
+      $rawKill = explode(" ",$emergencyKill);
+      logger("Kill pid: ".$rawKill[0]);
+      exec("kill -9 ".$rawKill[0]);
+    }
     @unlink("/tmp/user.scripts/running/$script");
     file_put_contents("/tmp/user.scripts/finished/$script","aborted");
     file_put_contents("/tmp/user.scripts/tmpScripts/$script/log.txt","Execution was aborted by user\n\n",FILE_APPEND);
