@@ -90,7 +90,7 @@ foreach ($schedule as $scriptSchedule) {
 }
 $scheduleScript .= "</script>";
 ?>
-<script src="/plugins/compose.manager/javascript/ace/ace.js" type= "text/javascript"></script>
+<script src="/plugins/user.scripts/javascript/ace/ace.js" type= "text/javascript"></script>
 <script>
 var caURL = "/plugins/user.scripts/exec.php";
 var aceTheme=<?php echo (in_array($theme,['black','gray']) ? json_encode('ace/theme/tomorrow_night') : json_encode('ace/theme/tomorrow')); ?>;
@@ -387,6 +387,7 @@ function cancelEdit() {
 
 function saveEdit() {
   var script = $("#editScriptName").html();
+  var editor = ace.edit("itemEditor");
   var scriptContents = editor.getValue();
   
   $.post(caURL,{action:'saveScript',script:script,scriptContents:scriptContents},function(data) {
