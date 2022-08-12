@@ -525,10 +525,11 @@ function parseINIString(data){
 
 function sortScripts() {
     var sortBy = $('#sort').val();
+    var sortOrder = $('#sort-order').val();
     var toSort = $('tr').toArray();
     var sorted = toSort.sort(function(a,b){
-        if( a.dataset[sortBy].toLowerCase() > b.dataset[sortBy].toLowerCase()) return 1;
-        else if(a.dataset[sortBy].toLowerCase() < b.dataset[sortBy].toLowerCase()) return -1;
+        if( a.dataset[sortBy].toLowerCase() > b.dataset[sortBy].toLowerCase()) return sortOrder === 'desc' ? 1 : -1;
+        else if(a.dataset[sortBy].toLowerCase() < b.dataset[sortBy].toLowerCase()) return sortOrder === 'desc' ? -1 : 1;
         else return 0;
     });
 
@@ -542,6 +543,11 @@ function sortScripts() {
     <select id='sort' onchange='sortScripts()' name='sort' style='margin-left: 20px;'>
         <option value='namename'>Script Name</option>
         <option selected value='scriptname'>Script Path</option>
+    </select>
+    <label for='sort-order'>Order: </label>
+    <select id='sort-order' onchange='sortScripts()' name='sort-order' style='margin-left: 20px;'>
+        <option value='asc'>Ascending</option>
+        <option selected value='desc'>Descending</option>
     </select>
 </div>
 
