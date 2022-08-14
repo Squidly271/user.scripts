@@ -320,8 +320,12 @@ $(function() {
 		}
 	});  
     attachEditScriptToolTipster();
+    var sort = localStorage.getItem('sort-by');
+    var order = localStorage.getItem('sort-order');
+    $('#sort').val(sort).change();
+    $('#sort-order').val(order).change();
+    $('table').show();
 
-  
   setInterval(function() {
     checkBackground();
   }, 1000);
@@ -526,6 +530,10 @@ function parseINIString(data){
 function sortScripts() {
     var sortBy = $('#sort').val();
     var sortOrder = $('#sort-order').val();
+
+    localStorage.setItem('sort-by', sortBy);
+    localStorage.setItem('sort-order', sortOrder);
+
     var toSort = $('tr').toArray();
     var sorted = toSort.sort(function(a,b){
         if( a.dataset[sortBy].toLowerCase() > b.dataset[sortBy].toLowerCase()) return sortOrder === 'desc' ? -1 : 1;
@@ -559,7 +567,7 @@ function sortScripts() {
 </div>
 
 <span class='tipsterallowed' hidden></span><br>
-<table>
+<table hidden>
 <?=$o?>
 </table>
 <br>
