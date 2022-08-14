@@ -340,15 +340,18 @@ $(function() {
 			var myID = origin.attr('id');
 			instance.content("Custom schedule format (standard cron entry):<br><tt>┌───────────── minute (0 - 59)<br></tt><tt>│ ┌───────────── hour (0 - 23)<br></tt><tt>│ │ ┌───────────── day of month (1 - 31)<br></tt><tt>│ │ │ ┌───────────── month (1 - 12)<br></tt><tt>│ │ │ │ ┌───────────── day of week (0 - 6) (Sunday to Saturday)<br></tt><tt>│ │ │ │ │<br></tt><tt>│ │ │ │ │<br></tt><tt>│ │ │ │ │<br></tt><tt>* * * * *</tt><br>See <a href='https://en.wikipedia.org/wiki/Cron' target='_blank'>HERE</a> for examples.  Or <a href='https://crontab.guru/' target='_blank'>HERE</a> for an online generator");
 		}
-	});  
-    attachEditScriptToolTipster();
-    var sort = localStorage.getItem('sort-by');
-    var order = localStorage.getItem('sort-order');
-    $('#sort').val(sort).change();
-    $('#sort-order').val(order).change();
-    $('.loader').hide();
-    $('table').show();
+	});
 
+	attachEditScriptToolTipster();
+	var sort = localStorage.getItem('sort-by');
+	var order = localStorage.getItem('sort-order');
+
+    if(sort) $('#sort').val(sort).change();
+    if(order) $('#sort-order').val(order).change();
+
+	$('.loader').hide();
+	$('table').show();
+  
   setInterval(function() {
     checkBackground();
   }, 1000);
@@ -567,6 +570,7 @@ function sortScripts() {
     $('tbody').html(sorted);
     attachEditScriptToolTipster();
 }
+
 </script>
 <a class='ca_cron' href='https://crontab.guru/' target='_blank'>What Is Cron</a><a class='ca_credits' style='float:right;cursor:pointer'>Credits</a>
 <div>
