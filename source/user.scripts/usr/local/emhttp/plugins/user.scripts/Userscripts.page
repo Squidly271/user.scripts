@@ -90,6 +90,28 @@ foreach ($schedule as $scriptSchedule) {
 }
 $scheduleScript .= "</script>";
 ?>
+<style>
+    @keyframes loading {
+        from {
+            transform: rotateZ(0deg);
+        }
+
+        to {
+            transform: rotateZ(359deg);
+        }
+    }
+
+    .loader {
+        width: 100%;
+        display: flex;
+        padding: 50px 0;
+        justify-content: center;
+    }
+
+    #load {
+        animation: loading 2s linear infinite;
+    }
+</style>
 <script src="/plugins/user.scripts/javascript/ace/ace.js" type= "text/javascript"></script>
 <script>
 var caURL = "/plugins/user.scripts/exec.php";
@@ -324,6 +346,7 @@ $(function() {
     var order = localStorage.getItem('sort-order');
     $('#sort').val(sort).change();
     $('#sort-order').val(order).change();
+    $('.loader').hide();
     $('table').show();
 
   setInterval(function() {
@@ -567,6 +590,9 @@ function sortScripts() {
 </div>
 
 <span class='tipsterallowed' hidden></span><br>
+<div class='loader'>
+<i class='fa fa-spinner fa-5x' id='load'></i>
+</div>
 <table hidden>
 <?=$o?>
 </table>
