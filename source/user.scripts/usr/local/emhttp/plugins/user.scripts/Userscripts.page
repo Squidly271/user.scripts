@@ -23,13 +23,14 @@ $userScripts = @array_diff(@scandir("/boot/config/plugins/user.scripts/scripts")
 if ( ! is_array($userScripts) ) {
   $userScripts = array();
 }
+$o = "";
 foreach ($userScripts as $script) {
   if ( ! is_file("/boot/config/plugins/user.scripts/scripts/$script/script") ) {
     continue;
   }
   $variables = getScriptVariables("/boot/config/plugins/user.scripts/scripts/$script/script");
-  $command = $variables['directPHP'] ? "directRunScript" : "runScript";
-  $scriptName = $variables['name'] ? $variables['name'] : $script;
+  $command = isset($variables['directPHP']) ? "directRunScript" : "runScript";
+  $scriptName = isset($variables['name']) ? $variables['name'] : $script;
   if ( is_file("/boot/config/plugins/user.scripts/scripts/$script/name") ) {
     $scriptName = trim(file_get_contents("/boot/config/plugins/user.scripts/scripts/$script/name"));
   }
@@ -46,12 +47,12 @@ foreach ($userScripts as $script) {
   }
   $o .= "<span class='ca_descEdit' data-scriptName=".escapeshellarg($script)." id='desc$id'>$description</span>";
   $o .= "</td>";
-  if ( ! $variables['backgroundOnly'] ) {
+  if ( ! $variables['backgroundOnly'] ?? false) {
     $o .= "<td width=10%><input type='button' value='Run Script' class='running$id' id='foreground$id' onclick='$command(&quot;/boot/config/plugins/user.scripts/scripts/$script/script&quot;);'></td>";
   } else {
     $o .= "<td width=10%></td>";
   }
-  if ( ! $variables['foregroundOnly'] ) {
+  if ( ! $variables['foregroundOnly'] ?? false) {
     $o .= "<td width=10%><input type='button' value='Run In Background' class='running$id' id='$id' onclick='backgroundScript(&quot;/boot/config/plugins/user.scripts/scripts/$script/script&quot;,&quot;$id&quot;);'>";
     $o .= "<td><select class='schedule' id='schedule$id' onchange='changeApply(&quot;$id&quot;);' data-script='&quot;/boot/config/plugins/user.scripts/scripts/$script/script&quot;'>";
     $o .= "  <option value='disabled'>Schedule Disabled</option>";

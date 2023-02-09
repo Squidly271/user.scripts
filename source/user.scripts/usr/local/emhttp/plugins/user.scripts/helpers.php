@@ -23,6 +23,7 @@ function startsWith($haystack, $needle) {
 
 function getRawVariables($filename) {
   $fileLines = explode("\n",str_replace("\r","",@file_get_contents($filename)));
+	$iniString = "";
   foreach($fileLines as $line) {
     if ( startsWith($line,"#!") ) {
       continue;
@@ -51,7 +52,7 @@ function getRawVariables($filename) {
     if ( empty($entry) ) {
       continue;
     }
-    $iniArray[trim($entry[0])] = $entry[1];
+    $iniArray[trim($entry[0])] = $entry[1] ?? "";
   }
   return $iniArray;
 }
