@@ -29,8 +29,8 @@ foreach ($userScripts as $script) {
     continue;
   }
   $variables = getScriptVariables("/boot/config/plugins/user.scripts/scripts/$script/script");
-  $command = isset($variables['directPHP']) ? "directRunScript" : "runScript";
-  $scriptName = isset($variables['name']) ? $variables['name'] : $script;
+  $command = ($variables['directPHP'] ?? false) ? "directRunScript" : "runScript";
+  $scriptName = ($variables['name'] ?? false) ? $variables['name'] : $script;
   if ( is_file("/boot/config/plugins/user.scripts/scripts/$script/name") ) {
     $scriptName = trim(file_get_contents("/boot/config/plugins/user.scripts/scripts/$script/name"));
   }
@@ -43,16 +43,16 @@ foreach ($userScripts as $script) {
     $description = str_replace("\r","",$description);
     $description = str_replace("\n","<br>",$description);
   } else {
-    $description = $variables['description'] ? $variables['description'] : "No description<br>(/boot/config/plugins/user.scripts/scripts/$script)";
+    $description = isset($variables['description']) ? $variables['description'] : "No description<br>(/boot/config/plugins/user.scripts/scripts/$script)";
   }
   $o .= "<span class='ca_descEdit' data-scriptName=".escapeshellarg($script)." id='desc$id'>$description</span>";
   $o .= "</td>";
-  if ( ! $variables['backgroundOnly'] ?? false) {
+  if ( ! isset($variables['backgroundOnly']) ) {
     $o .= "<td width=10%><input type='button' value='Run Script' class='running$id' id='foreground$id' onclick='$command(&quot;/boot/config/plugins/user.scripts/scripts/$script/script&quot;);'></td>";
   } else {
     $o .= "<td width=10%></td>";
   }
-  if ( ! $variables['foregroundOnly'] ?? false) {
+  if ( ! isset($variables['foregroundOnly']) ) {
     $o .= "<td width=10%><input type='button' value='Run In Background' class='running$id' id='$id' onclick='backgroundScript(&quot;/boot/config/plugins/user.scripts/scripts/$script/script&quot;,&quot;$id&quot;);'>";
     $o .= "<td><select class='schedule' id='schedule$id' onchange='changeApply(&quot;$id&quot;);' data-script='&quot;/boot/config/plugins/user.scripts/scripts/$script/script&quot;'>";
     $o .= "  <option value='disabled'>Schedule Disabled</option>";

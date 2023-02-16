@@ -2,8 +2,8 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "user.scripts">
 <!ENTITY author    "Andrew Zawadzki">
-<!ENTITY version   "2022.08.01">
-<!ENTITY md5       "fda67501b1bab349cd225c0807552d09">
+<!ENTITY version   "2023.02.16">
+<!ENTITY md5       "255345766c43e3a8a07648c81a8b70a0">
 <!ENTITY launch    "Settings/Userscripts">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
 <!ENTITY github    "Squidly271/user.scripts">
@@ -13,6 +13,9 @@
 <PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.3.3" icon="file-text-o">
 
 <CHANGES>
+###2023.02.16
+- PHP8 Compliance
+
 ###2022.08.01
 - Use ACE editor (thanks dcflachs)
 - Update link for cron (thanks Magic-Mayo)
