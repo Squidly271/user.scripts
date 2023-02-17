@@ -322,9 +322,6 @@ $(function() {
   setInterval(function() {
     checkBackground();
   }, 1000);
-  if ( "<?=$installedVersion?>" < "<?=$upgradeVersion?>" ) {
-    $('#upgradeAvailable').show();
-  }
 });
 
 function stripTags(string) {
