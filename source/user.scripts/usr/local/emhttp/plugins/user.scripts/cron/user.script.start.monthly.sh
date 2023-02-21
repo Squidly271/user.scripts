@@ -1,3 +1,3 @@
-#!/bin/bash
-/usr/local/emhttp/plugins/user.scripts/startSchedule.php monthly
+#!/usr/bin/env bash
 
+/usr/local/emhttp/plugins/user.scripts/startSchedule.php monthly

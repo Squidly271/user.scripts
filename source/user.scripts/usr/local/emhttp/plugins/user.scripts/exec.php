@@ -16,12 +16,12 @@ switch ($_POST['action']) {
 			echo "/usr/local/emhttp/plugins/user.scripts/arrayNotStarted.sh";
 			logger("Array must be started to run this script ($path)");
 			break;
-		}    
+		}
 		$newPath = str_replace("/boot/config/plugins/user.scripts/scripts/","/tmp/user.scripts/tmpScripts/",$path);
 		exec("mkdir -p ".escapeshellarg(dirname($newPath)));
 		$script = file_get_contents($path);
 		if ( ! startsWith($script,"#!") ) {
-			$script = "#!/bin/bash\n".$script;
+			$script = "#!/usr/bin/env bash\n".$script;
 		}
 		$script = str_replace("\r","",$script);
 		file_put_contents($newPath,$script);
@@ -38,7 +38,7 @@ switch ($_POST['action']) {
 			echo "/usr/local/emhttp/plugins/user.scripts/arrayNotStarted.sh";
 			logger("Array must be started to run this script ($path)");
 			break;
-		}    
+		}
 		$newPath = str_replace("/boot/config/plugins/user.scripts/scripts/","/usr/local/emhttp/plugins/tmp.user.scripts/tmpScripts/",$path);
 		exec("mkdir -p ".escapeshellarg(dirname($newPath)));
 		$script = file_get_contents($path);
@@ -59,9 +59,9 @@ switch ($_POST['action']) {
 		}
 		if ( ! is_array($scriptArray) ) {
 			$scriptArray = array();
-		}  
+		}
 		$untouchedScriptArray = $scriptArray;
-	 
+
 		$o = "<script>";
 		$running = @array_diff(scandir("/tmp/user.scripts/running"),array(".",".."));
 		if ( ! is_array($running) ) {
@@ -97,7 +97,7 @@ switch ($_POST['action']) {
 				$o .= "$('#trash$element').hide();";
 			}
 		}
-	 
+
 		foreach ( $untouchedScriptArray as $script) {
 			$element = getElement($script);
 
@@ -114,7 +114,7 @@ switch ($_POST['action']) {
 		break;
 	case 'abortScript':
 		$script = isset($_POST['name']) ? urldecode(($_POST['name'])) : "";
-		
+
 		$pid = file_get_contents("/tmp/user.scripts/running/$script");
 		exec("pkill -TERM -P $pid");
 		exec("kill -9 $pid");
@@ -136,10 +136,10 @@ switch ($_POST['action']) {
 		$name = isset($_POST['name']) ? urldecode(($_POST['name'])) : "";
 		@unlink("/tmp/user.scripts/tmpScripts/$name/log.txt");
 		break;
-	
+
 	case 'applySchedule':
 		$schedules = $_POST['schedule'];
-		
+
 		foreach ($schedules as $schedule) {
 			$script = str_replace('"',"",$schedule[0]);
 			$scriptSchedule['script'] = $script;
@@ -147,7 +147,7 @@ switch ($_POST['action']) {
 			$scriptSchedule['id'] = $schedule[2];
 			$scriptSchedule['custom'] = $schedule[3];
 			$newSchedule[$script] = $scriptSchedule;
-			
+
 			if ( $scriptSchedule['frequency'] == "custom" && $scriptSchedule['custom'] ) {
 				$cronSchedule .= trim($scriptSchedule['custom'])." /usr/local/emhttp/plugins/user.scripts/startCustom.php $script > /dev/null 2>&1\n";
 			}
@@ -161,7 +161,7 @@ switch ($_POST['action']) {
 			@unlink("/boot/config/plugins/user.scripts/customSchedule.cron");
 		}
 		exec("/usr/local/sbin/update_cron");
-		
+
 		echo "Schedule Applied";
 		break;
 	case 'convertLog':
@@ -193,7 +193,7 @@ switch ($_POST['action']) {
 			$o = "nothingDefined=nothingDefined";
 		}
 		echo $o;
-		break;  
+		break;
 	case 'changeName':
 		$script = isset($_POST['script']) ? urldecode(($_POST['script'])) : "";
 		$newName = isset($_POST['newName']) ? urldecode(($_POST['newName'])) : "";
@@ -211,7 +211,7 @@ switch ($_POST['action']) {
 		$scriptContents = str_replace("\r","",$scriptContents);
 		echo $scriptContents;
 		if ( ! $scriptContents ) {
-			echo "#!/bin/bash\n";
+			echo "#!/usr/bin/env bash\n";
 		}
 		break;
 	case 'saveScript':
@@ -238,7 +238,7 @@ switch ($_POST['action']) {
 			}
 		}
 		exec("mkdir -p ".escapeshellarg($folder));
-		file_put_contents("$folder/script","#!/bin/bash\n");
+		file_put_contents("$folder/script","#!/usr/bin/env bash\n");
 		file_put_contents("$folder/name",$scriptName);
 		echo "ok";
 		break;
