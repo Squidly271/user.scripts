@@ -175,7 +175,6 @@ switch ($_POST['action']) {
 	case 'getScriptVariables':
 		$script = isset($_POST['script']) ? urldecode(($_POST['script'])) : "";
 		$rawVariables = getRawVariables($script);
-		if ( $rawVariables ) {
 		if ( is_array($rawVariables) ) {
 			$o = "";
 			$keys = array_keys($rawVariables);
