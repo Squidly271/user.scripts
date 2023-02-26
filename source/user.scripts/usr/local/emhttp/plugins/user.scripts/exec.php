@@ -181,6 +181,7 @@ switch ($_POST['action']) {
 			foreach ($keys as $eachKey) {
 				$o .= "$eachKey={$rawVariables[$eachKey]}\n";
 			}
+			echo $o;
 		} else {
 			echo "nothingDefined=nothingDefined";
 		}

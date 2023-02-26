@@ -2,8 +2,8 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "user.scripts">
 <!ENTITY author    "Andrew Zawadzki">
-<!ENTITY version   "2023.02.25a">
-<!ENTITY md5       "80e3cfa57fe0309bfc136460053c7fbd">
+<!ENTITY version   "2023.02.26">
+<!ENTITY md5       "cd043fc69a936db44212945096588243">
 <!ENTITY launch    "Settings/Userscripts">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
 <!ENTITY github    "Squidly271/user.scripts">
@@ -13,6 +13,9 @@
 <PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.3.3" icon="file-text-o">
 
 <CHANGES>
+###2023.02.26
+- Just call me Mr Faux Pas
+
 ###2023.02.25
 - PHP8 Upgrades
 
