@@ -2,8 +2,8 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "user.scripts">
 <!ENTITY author    "Andrew Zawadzki">
-<!ENTITY version   "2023.02.26">
-<!ENTITY md5       "cd043fc69a936db44212945096588243">
+<!ENTITY version   "2023.02.27">
+<!ENTITY md5       "01cd7fde54636e3c16932879e4841855">
 <!ENTITY launch    "Settings/Userscripts">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
 <!ENTITY github    "Squidly271/user.scripts">
@@ -13,6 +13,9 @@
 <PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.3.3" icon="file-text-o">
 
 <CHANGES>
+###2023.02.27
+- Fix logging
+
 ###2023.02.26
 - Just call me Mr Faux Pas
 
