@@ -36,7 +36,7 @@ foreach ($userScripts as $script) {
   }
   $id = str_replace(".","-",$script);
   $id = str_replace(" ","",$id);
-  $o .= "<tr><td width='30%' style='text-align:initial'>";
+  $o .= "<tr data-nameName='$scriptName' data-scriptName=".escapeshellarg($script)."><td width='30%' style='text-align:initial'>";
   $o .= "<font size='2'><span class='ca_nameEdit' id='name$id' data-nameName='$scriptName' data-scriptName=".escapeshellarg($script)." style='font-size:1.9rem;cursor:pointer;color:#ff8c2f;'><i class='fa fa-gear'></i></span>&nbsp;&nbsp;<b><span style='color:#ff8c2f;'>$scriptName</span>&nbsp;</b></font><br>";
   if ( is_file("/boot/config/plugins/user.scripts/scripts/$script/description") ) {
     $description = @file_get_contents("/boot/config/plugins/user.scripts/scripts/$script/description");
@@ -91,6 +91,28 @@ foreach ($schedule as $scriptSchedule) {
 }
 $scheduleScript .= "</script>";
 ?>
+<style>
+    @keyframes loading {
+        from {
+            transform: rotateZ(0deg);
+        }
+
+        to {
+            transform: rotateZ(359deg);
+        }
+    }
+
+    .loader {
+        width: 100%;
+        display: flex;
+        padding: 50px 0;
+        justify-content: center;
+    }
+
+    #load {
+        animation: loading 2s linear infinite;
+    }
+</style>
 <script src="/plugins/user.scripts/javascript/ace/ace.js" type= "text/javascript"></script>
 <script>
 var caURL = "/plugins/user.scripts/exec.php";
@@ -261,6 +283,26 @@ function applySchedule() {
   $("#applyButton").prop("disabled",true);
 }
 
+function attachEditScriptToolTipster(){
+    $('.ca_nameEdit').tooltipster({
+		trigger: 'custom',
+		triggerOpen: {click:true,touchstart:true,mouseenter:true},
+		triggerClose:{click:true,scroll:false,mouseleave:true},
+		delay: 1000,
+		contentAsHTML: true,
+		animation: 'grow',
+		interactive: true,
+		viewportAware: true,
+		functionBefore: function(instance,helper) {
+			var origin = $(helper.origin);
+			var myID = origin.attr('id');
+			var name = $("#"+myID).html();
+			var scriptName = $("#"+myID).attr("data-scriptname");
+			instance.content("/boot/config/plugins/user.scripts/scripts/"+scriptName + "<br><center><input type='button' value='Edit Name' onclick='editName(&quot;"+myID+"&quot;);'><input type='button' value='Edit Description' onclick='editDesc(&quot;"+myID+"&quot;);'><input type='button' onclick='editScript(&quot;"+myID+"&quot;);' value='Edit Script'><input type='button' onclick='deleteScript(&quot;"+myID+"&quot;);' value='Delete Script'></center>");
+		}
+	});
+}
+
 $(function() {
 	if ( typeof caPluginUpdateCheck === "function" ) {
 		caPluginUpdateCheck("user.scripts.plg",{name:"User Scripts"});
@@ -299,25 +341,17 @@ $(function() {
 			var myID = origin.attr('id');
 			instance.content("Custom schedule format (standard cron entry):<br><tt>┌───────────── minute (0 - 59)<br></tt><tt>│ ┌───────────── hour (0 - 23)<br></tt><tt>│ │ ┌───────────── day of month (1 - 31)<br></tt><tt>│ │ │ ┌───────────── month (1 - 12)<br></tt><tt>│ │ │ │ ┌───────────── day of week (0 - 6) (Sunday to Saturday)<br></tt><tt>│ │ │ │ │<br></tt><tt>│ │ │ │ │<br></tt><tt>│ │ │ │ │<br></tt><tt>* * * * *</tt><br>See <a href='https://en.wikipedia.org/wiki/Cron' target='_blank'>HERE</a> for examples.  Or <a href='https://crontab.guru/' target='_blank'>HERE</a> for an online generator");
 		}
-	});  
-	$('.ca_nameEdit').tooltipster({
-		trigger: 'custom',
-		triggerOpen: {click:true,touchstart:true,mouseenter:true},
-		triggerClose:{click:true,scroll:false,mouseleave:true},
-		delay: 1000,
-		contentAsHTML: true,
-		animation: 'grow',
-		interactive: true,
-		viewportAware: true,
-		functionBefore: function(instance,helper) {
-			var origin = $(helper.origin);
-			var myID = origin.attr('id');
-			var name = $("#"+myID).html();
-			var scriptName = $("#"+myID).attr("data-scriptname");
-			instance.content("/boot/config/plugins/user.scripts/scripts/"+scriptName + "<br><center><input type='button' value='Edit Name' onclick='editName(&quot;"+myID+"&quot;);'><input type='button' value='Edit Description' onclick='editDesc(&quot;"+myID+"&quot;);'><input type='button' onclick='editScript(&quot;"+myID+"&quot;);' value='Edit Script'><input type='button' onclick='deleteScript(&quot;"+myID+"&quot;);' value='Delete Script'></center>");
-		}
 	});
 
+	attachEditScriptToolTipster();
+	var sort = localStorage.getItem('sort-by');
+	var order = localStorage.getItem('sort-order');
+
+    if(sort) $('#sort').val(sort).change();
+    if(order) $('#sort-order').val(order).change();
+
+	$('.loader').hide();
+	$('table').show();
   
   setInterval(function() {
     checkBackground();
@@ -516,8 +550,39 @@ function parseINIString(data){
     });
     return value;
 }
+
+function sortScripts() {
+    var sortBy = $('#sort').val();
+    var sortOrder = $('#sort-order').val();
+
+    localStorage.setItem('sort-by', sortBy);
+    localStorage.setItem('sort-order', sortOrder);
+
+    var toSort = $('tr').toArray();
+    var sorted = toSort.sort(function(a,b){
+        if( a.dataset[sortBy].toLowerCase() > b.dataset[sortBy].toLowerCase()) return sortOrder === 'desc' ? -1 : 1;
+        else if(a.dataset[sortBy].toLowerCase() < b.dataset[sortBy].toLowerCase()) return sortOrder === 'desc' ? 1 : -1;
+        else return 0;
+    });
+
+    $('tbody').html(sorted);
+    attachEditScriptToolTipster();
+}
+
 </script>
 <a class='ca_cron' href='https://crontab.guru/' target='_blank'>What Is Cron</a><a class='ca_credits' style='float:right;cursor:pointer'>Credits</a>
+<div>
+    <label for='sort'>Sort By: </label>
+    <select id='sort' onchange='sortScripts()' name='sort' style='margin-left: 20px;'>
+        <option value='namename'>Script Name</option>
+        <option selected value='scriptname'>Script Path</option>
+    </select>
+    <label for='sort-order'>Order: </label>
+    <select id='sort-order' onchange='sortScripts()' name='sort-order' style='margin-left: 20px;'>
+        <option selected value='asc'>Ascending</option>
+        <option value='desc'>Descending</option>
+    </select>
+</div>
 
 <div class='editing' hidden>
 <center><b>Editing /boot/config/plugins/user.scripts/scripts/<span id='editScriptName'></span>/script</b><br>
@@ -527,7 +592,10 @@ function parseINIString(data){
 </div>
 
 <span class='tipsterallowed' hidden></span><br>
-<table>
+<div class='loader'>
+<i class='fa fa-spinner fa-5x' id='load'></i>
+</div>
+<table hidden>
 <?=$o?>
 </table>
 <br>
