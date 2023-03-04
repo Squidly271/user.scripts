@@ -11,7 +11,7 @@ $command = trim($command);
 $origCommand = $command;
 $origlogFile = dirname($command)."/log.txt";
 $scriptVariables = getScriptVariables($origCommand);
-if ( $scriptVariables['clearLog'] ) {
+if ( $scriptVariables['clearLog']??false ) {
   @unlink($origlogFile);
 }
 file_put_contents($origlogFile,"Script Starting ".date("M d, Y  H:i.s")."\n\n",FILE_APPEND);

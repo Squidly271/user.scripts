@@ -3,6 +3,7 @@
 require_once("/usr/local/emhttp/plugins/user.scripts/helpers.php");
 
 unset($argv[0]);
+$command = "";
 foreach ($argv as $arg) {
   $command .= "$arg ";
 }
@@ -19,15 +20,15 @@ if ( ! is_file($command) ) {
 $unRaidVars = parse_ini_file("/var/local/emhttp/var.ini");
 $variables = getScriptVariables($command);
 
-if ( $variables['arrayStarted'] && $unRaidVars['mdState'] != "STARTED" ) {
+if ( ($variables['arrayStarted']??false) && $unRaidVars['mdState'] != "STARTED" ) {
   logger("$command requires array to be started to run");
   exit();
 }
-if ( $variables['foregroundOnly'] ) {
+if ( ($variables['foregroundOnly']??false) ) {
   exit();
 }
 
-if ( $variables['noParity'] && $unRaidVars['mdResyncPos'] ) {
+if ( ($variables['noParity']??false) && $unRaidVars['mdResyncPos'] ) {
 	logger("Parity Check / rebuild in progress.  Not executing $command per variable setting.");
 	exit();
 }
