@@ -221,7 +221,7 @@ The 'source' file.
 <INLINE>
 <![CDATA[
 <?
-  $flashContents = @array_diff(@scandir("/boot/config/plugins/user.scripts/scripts"),array(".",".."));
+  $flashContents = @array_diff(@scandir("/boot/config/plugins/user.scripts/scripts") ?: [],array(".",".."));
   
   if ( ! $flashContents ) {
     exec("mkdir -p /boot/config/plugins/user.scripts/scripts");
