@@ -2,8 +2,8 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "user.scripts">
 <!ENTITY author    "Andrew Zawadzki">
-<!ENTITY version   "2023.03.04">
-<!ENTITY md5       "15a8a5ca7623e11b2f84a0858cd91cf2">
+<!ENTITY version   "2023.03.29">
+<!ENTITY md5       "3fc8b051ecc95a0ee4620a33d0e97cf1">
 <!ENTITY launch    "Settings/Userscripts">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
 <!ENTITY github    "Squidly271/user.scripts">
@@ -13,6 +13,9 @@
 <PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.3.3" icon="file-text-o">
 
 <CHANGES>
+###2023.03.29
+- Switch to standard Dynamix classes for theming
+
 ###2023.03.04
 - PHP8 Upgrades
 
@@ -252,7 +255,7 @@ cp /usr/local/emhttp/plugins/user.scripts/cron/user.script.start.monthly.sh /etc
 echo ""
 echo "----------------------------------------------------"
 echo " &name; has been installed."
-echo " Copyright 2016-2021, Andrew Zawadzki"
+echo " Copyright 2016-2023, Andrew Zawadzki"
 echo " Version: &version;"
 echo "----------------------------------------------------"
 echo ""
