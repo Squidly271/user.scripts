@@ -47,12 +47,12 @@ foreach ($userScripts as $script) {
   }
   $o .= "<span class='ca_descEdit' data-scriptName=".escapeshellarg($script)." id='desc$id'>$description</span>";
   $o .= "</td>";
-  if ( ! isset($variables['backgroundOnly']) ) {
+  if ( ($variables['backgroundOnly'] ?? false) != "true")  {
     $o .= "<td width=10%><input type='button' value='Run Script' class='running$id' id='foreground$id' onclick='$command(&quot;/boot/config/plugins/user.scripts/scripts/$script/script&quot;);'></td>";
   } else {
     $o .= "<td width=10%></td>";
   }
-  if ( ! isset($variables['foregroundOnly']) ) {
+  if ( ($variables['foregroundOnly'] ?? false) != "true" ) {
     $o .= "<td width=10%><input type='button' value='Run In Background' class='running$id' id='$id' onclick='backgroundScript(&quot;/boot/config/plugins/user.scripts/scripts/$script/script&quot;,&quot;$id&quot;);'>";
     $o .= "<td><select class='schedule' id='schedule$id' onchange='changeApply(&quot;$id&quot;);' data-script='&quot;/boot/config/plugins/user.scripts/scripts/$script/script&quot;'>";
     $o .= "  <option value='disabled'>Schedule Disabled</option>";
