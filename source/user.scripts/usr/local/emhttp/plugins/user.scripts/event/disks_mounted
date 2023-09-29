@@ -1,4 +1,5 @@
 #!/bin/bash
+/usr/local/sbin/update_cron
 /usr/local/emhttp/plugins/user.scripts/startSchedule.php start
 
 if [ ! -e /tmp/user.scripts/booted ]
