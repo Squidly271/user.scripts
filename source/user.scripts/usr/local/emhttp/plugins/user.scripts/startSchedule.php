@@ -24,13 +24,13 @@ foreach ($schedules as $scheduledScript) {
       continue;
     }
     $variables = getScriptVariables($path);
-    if ( $variables['arrayStarted'] && $unRaidVars['mdState'] != "STARTED" ) {
+    if ( ($variables['arrayStarted']??false) && $unRaidVars['mdState'] != "STARTED" ) {
       continue;
     }
-    if ( $variables['foregroundOnly'] ) {
+    if ( $variables['foregroundOnly']??false ) {
       continue;
     }
-		if ( $variables['noParity'] && $unRaidVars['mdResyncPos'] ) {
+		if ( ($variables['noParity']??false) && $unRaidVars['mdResyncPos'] ) {
 			logger("Parity Check / rebuild in progress.  Not executing $path per variable setting.");
 			continue;
 		}

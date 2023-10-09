@@ -12,7 +12,7 @@ switch ($_POST['action']) {
 		$path = isset($_POST['path']) ? urldecode(($_POST['path'])) : "";
 		$variables = getScriptVariables($path);
 		$unRaidVars = parse_ini_file("/var/local/emhttp/var.ini");
-		if ($variables['arrayStarted'] && $unRaidVars['mdState'] != "STARTED" ) {
+		if ( ($variables['arrayStarted']??false) && $unRaidVars['mdState'] != "STARTED" ) {
 			echo "/usr/local/emhttp/plugins/user.scripts/arrayNotStarted.sh";
 			logger("Array must be started to run this script ($path)");
 			break;
@@ -34,7 +34,7 @@ switch ($_POST['action']) {
 		$path = isset($_POST['path']) ? urldecode(($_POST['path'])) : "";
 		$variables = getScriptVariables($path);
 		$unRaidVars = parse_ini_file("/var/local/emhttp/var.ini");
-		if ($variables['arrayStarted'] && $unRaidVars['mdState'] != "STARTED" ) {
+		if (($variables['arrayStarted']??false) && $unRaidVars['mdState'] != "STARTED" ) {
 			echo "/usr/local/emhttp/plugins/user.scripts/arrayNotStarted.sh";
 			logger("Array must be started to run this script ($path)");
 			break;
@@ -175,8 +175,13 @@ switch ($_POST['action']) {
 	case 'getScriptVariables':
 		$script = isset($_POST['script']) ? urldecode(($_POST['script'])) : "";
 		$rawVariables = getRawVariables($script);
-		if ( $rawVariables ) {
-			echo $rawVariables;
+		if ( is_array($rawVariables) ) {
+			$o = "";
+			$keys = array_keys($rawVariables);
+			foreach ($keys as $eachKey) {
+				$o .= "$eachKey={$rawVariables[$eachKey]}\n";
+			}
+			echo $o;
 		} else {
 			echo "nothingDefined=nothingDefined";
 		}
@@ -185,6 +190,7 @@ switch ($_POST['action']) {
 		$script = isset($_POST['script']) ? urldecode(($_POST['script'])) : "";
 		$rawVariables = getRawVariables($script);
 		if ( is_array($rawVariables) ) {
+			$o = "";
 			$keys = array_keys($rawVariables);
 			foreach ($keys as $eachKey) {
 				$o .= "$eachKey={$rawVariables[$eachKey]}\n";

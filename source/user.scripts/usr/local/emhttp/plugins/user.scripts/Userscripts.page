@@ -5,7 +5,7 @@ Title="User Scripts"
 <?
 ############################################################
 #                                                          #
-# User Scripts Plugin Copyright 2016-2021, Andrew Zawadzki #
+# User Scripts Plugin Copyright 2016-2023, Andrew Zawadzki #
 #                                                          #
 ############################################################
 
@@ -37,7 +37,7 @@ foreach ($userScripts as $script) {
   $id = str_replace(".","-",$script);
   $id = str_replace(" ","",$id);
   $o .= "<tr><td width='30%' style='text-align:initial'>";
-  $o .= "<font size='2'><span class='ca_nameEdit' id='name$id' data-nameName='$scriptName' data-scriptName=".escapeshellarg($script)." style='font-size:1.9rem;cursor:pointer;color:#ff8c2f;'><i class='fa fa-gear'></i></span>&nbsp;&nbsp;<b><span style='color:#ff8c2f;'>$scriptName</span>&nbsp;</b></font><br>";
+  $o .= "<font size='2'><span class='ca_nameEdit warning' id='name$id' data-nameName='$scriptName' data-scriptName=".escapeshellarg($script)." style='font-size:1.9rem;cursor:pointer;'><i class='warning fa fa-gear'></i></span>&nbsp;&nbsp;<b><span style='color:#ff8c2f;'>$scriptName</span>&nbsp;</b></font><br>";
   if ( is_file("/boot/config/plugins/user.scripts/scripts/$script/description") ) {
     $description = @file_get_contents("/boot/config/plugins/user.scripts/scripts/$script/description");
     $description = str_replace("\r","",$description);
@@ -47,12 +47,12 @@ foreach ($userScripts as $script) {
   }
   $o .= "<span class='ca_descEdit' data-scriptName=".escapeshellarg($script)." id='desc$id'>$description</span>";
   $o .= "</td>";
-  if ( ! isset($variables['backgroundOnly']) ) {
+  if ( ($variables['backgroundOnly'] ?? false) != "true")  {
     $o .= "<td width=10%><input type='button' value='Run Script' class='running$id' id='foreground$id' onclick='$command(&quot;/boot/config/plugins/user.scripts/scripts/$script/script&quot;);'></td>";
   } else {
     $o .= "<td width=10%></td>";
   }
-  if ( ! isset($variables['foregroundOnly']) ) {
+  if ( ($variables['foregroundOnly'] ?? false) != "true" ) {
     $o .= "<td width=10%><input type='button' value='Run In Background' class='running$id' id='$id' onclick='backgroundScript(&quot;/boot/config/plugins/user.scripts/scripts/$script/script&quot;,&quot;$id&quot;);'>";
     $o .= "<td><select class='schedule' id='schedule$id' onchange='changeApply(&quot;$id&quot;);' data-script='&quot;/boot/config/plugins/user.scripts/scripts/$script/script&quot;'>";
     $o .= "  <option value='disabled'>Schedule Disabled</option>";
@@ -70,9 +70,9 @@ foreach ($userScripts as $script) {
   } else {
     $o .= "<td width=10%></td><td width=15%></td>";
   }
-  $o .= "<td><i class='ca_tooltip fa fa-file-o' id='log$id' onclick='showLog(&quot;$script&quot;);' style='display:none;cursor:pointer;font-size:2rem;color:#ff8c2f;' title='Show Log'></i>";
-  $o .= "&nbsp;&nbsp;&nbsp;<i class='ca_tooltip fa fa-download' id='download$id' style='display:none;cursor:pointer;font-size:2rem;color:#ff8c2f;' title='Download Log' onclick='downloadLog(&quot;$script&quot;);'></i>";
-  $o .= "&nbsp;&nbsp;&nbsp;<i class='ca_tooltip fa fa-trash' id='trash$id' onclick='deleteLog(&quot;$script&quot;);'  style='display:none;cursor:pointer;font-size:2rem;color:#ff8c2f;' title='Delete Log File'></i>";
+  $o .= "<td><i class='warning ca_tooltip fa fa-file-o' id='log$id' onclick='showLog(&quot;$script&quot;);' style='display:none;cursor:pointer;font-size:2rem;' title='Show Log'></i>";
+  $o .= "&nbsp;&nbsp;&nbsp;<i class='warning ca_tooltip fa fa-download' id='download$id' style='display:none;cursor:pointer;font-size:2rem;' title='Download Log' onclick='downloadLog(&quot;$script&quot;);'></i>";
+  $o .= "&nbsp;&nbsp;&nbsp;<i class='warning ca_tooltip fa fa-trash' id='trash$id' onclick='deleteLog(&quot;$script&quot;);' style='display:none;cursor:pointer;font-size:2rem;' title='Delete Log File'></i>";
   $o .= "</td>";
   $o .= "<td><font color='red'><span id='status$id'></span></font>";
   $o .= "</tr>";
@@ -574,7 +574,7 @@ Note that you do NOT have to have any or all of the lines contained within any p
 *PHP scripters:  You can also place these variable lines immediately after the <? or <?PHP line<br>
 </span>
 
-<center>For help with this plugin, visit <a href='http://lime-technology.com/forum/index.php?topic=49992.0' target='_blank'>HERE</a></center>
+<center>For help with this plugin, visit <a href='https://forums.unraid.net/topic/48286-plugin-ca-user-scripts/' target='_blank'>HERE</a></center>
 
 
 <span id='debugging'></span>

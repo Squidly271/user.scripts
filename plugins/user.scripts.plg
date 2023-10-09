@@ -2,8 +2,8 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "user.scripts">
 <!ENTITY author    "Andrew Zawadzki">
-<!ENTITY version   "2023.02.16a">
-<!ENTITY md5       "b21e481d065307693dbc7f770fd27867">
+<!ENTITY version   "2023.09.30">
+<!ENTITY md5       "8d1b43ce145e9b800a001154e602d43c">
 <!ENTITY launch    "Settings/Userscripts">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
 <!ENTITY github    "Squidly271/user.scripts">
@@ -13,6 +13,26 @@
 <PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.3.3" icon="file-text-o">
 
 <CHANGES>
+###2023.09.30
+- Run update_cron at array start
+###2023.07.16
+- Fixed: Setting foregroundOnly=false would act like setting it to be true
+
+###2023.03.29
+- Switch to standard Dynamix classes for theming
+
+###2023.03.04
+- PHP8 Upgrades
+
+###2023.02.27
+- Fix logging
+
+###2023.02.26
+- Just call me Mr Faux Pas
+
+###2023.02.25
+- PHP8 Upgrades
+
 ###2023.02.16
 - PHP8 Compliance
 
@@ -209,7 +229,7 @@ The 'source' file.
 <INLINE>
 <![CDATA[
 <?
-  $flashContents = @array_diff(@scandir("/boot/config/plugins/user.scripts/scripts"),array(".",".."));
+  $flashContents = @array_diff(@scandir("/boot/config/plugins/user.scripts/scripts") ?: [],array(".",".."));
   
   if ( ! $flashContents ) {
     exec("mkdir -p /boot/config/plugins/user.scripts/scripts");
@@ -240,7 +260,7 @@ cp /usr/local/emhttp/plugins/user.scripts/cron/user.script.start.monthly.sh /etc
 echo ""
 echo "----------------------------------------------------"
 echo " &name; has been installed."
-echo " Copyright 2016-2021, Andrew Zawadzki"
+echo " Copyright 2016-2023, Andrew Zawadzki"
 echo " Version: &version;"
 echo "----------------------------------------------------"
 echo ""
