@@ -87,7 +87,7 @@ foreach ($schedule as $scriptSchedule) {
   $scheduleScript .= "$('#custom".$scriptSchedule['id']."').val('".$scriptSchedule['custom']."');";
   if ( $scriptSchedule['frequency'] == "custom" ) {
     $scheduleScript .= "$('#custom".$scriptSchedule['id']."').show();";
-  }      
+  }
 }
 $scheduleScript .= "</script>";
 ?>
@@ -178,7 +178,7 @@ function runScript(path) {
         });
       } else {
         actuallyRunScript(path,"");
-      }        
+      }
     }
   });
 }
@@ -244,13 +244,13 @@ function changeApply(scheduleID) {
 
 function applySchedule() {
   var schedule = new Array();
-  
+
   $(".schedule").each(function() {
     var script = $(this).data("script");
     var frequency = $(this).val();
     var custom = $("#custom"+this.id).val();
     var newSchedule = new Array(script,frequency,this.id,custom);
-    
+
     schedule.push(newSchedule);
   });
   $.post(caURL,{action:'applySchedule',schedule:schedule}, function(data) {
@@ -283,7 +283,7 @@ $(function() {
 			var myID = origin.attr('id');
 			instance.content("<div style='overflow:scroll; max-height:350px; height:550px; overflow-x:hidden; overflow-y:auto;'><center><img src='/plugins/user.scripts/images/user.scripts.png' width=96px><br><font size='6' color='white'>CA User Scripts</font><br><br><?=$caCredits?></div>");
 		}
-	});  
+	});
 	$('.ca_cron').tooltipster({
 		trigger: 'custom',
 		triggerOpen: {mouseenter:true},
@@ -299,7 +299,7 @@ $(function() {
 			var myID = origin.attr('id');
 			instance.content("Custom schedule format (standard cron entry):<br><tt>┌───────────── minute (0 - 59)<br></tt><tt>│ ┌───────────── hour (0 - 23)<br></tt><tt>│ │ ┌───────────── day of month (1 - 31)<br></tt><tt>│ │ │ ┌───────────── month (1 - 12)<br></tt><tt>│ │ │ │ ┌───────────── day of week (0 - 6) (Sunday to Saturday)<br></tt><tt>│ │ │ │ │<br></tt><tt>│ │ │ │ │<br></tt><tt>│ │ │ │ │<br></tt><tt>* * * * *</tt><br>See <a href='https://en.wikipedia.org/wiki/Cron' target='_blank'>HERE</a> for examples.  Or <a href='https://crontab.guru/' target='_blank'>HERE</a> for an online generator");
 		}
-	});  
+	});
 	$('.ca_nameEdit').tooltipster({
 		trigger: 'custom',
 		triggerOpen: {click:true,touchstart:true,mouseenter:true},
@@ -318,7 +318,7 @@ $(function() {
 		}
 	});
 
-  
+
   setInterval(function() {
     checkBackground();
   }, 1000);
@@ -378,7 +378,7 @@ function editScript(myID) {
     }
   });
 }
-  
+
 function cancelEdit() {
   $(".editing").hide();
 }
@@ -387,13 +387,13 @@ function saveEdit() {
   var script = $("#editScriptName").html();
   var editor = ace.edit("itemEditor");
   var scriptContents = editor.getValue();
-  
+
   $.post(caURL,{action:'saveScript',script:script,scriptContents:scriptContents},function(data) {
     if (data) {
       $(".editing").hide();
     }
   });
-  
+
 }
 
 function applyName(myID) {
@@ -544,7 +544,7 @@ function parseINIString(data){
 <span id='howToAdd' style='display:none'>
 To add your own user scripts, on the flash drive within the <font color='red'><b>config/plugins/user.scripts/scripts</b></font> folder, create a new folder for a script (the name does not matter of the folder <font color='red'> but it can only contain the following characters: letters ([A-Za-z]), digits ([0-9]), hyphens ("-"), underscores ("_"), colons (":"), periods ("."), and spaces (" ").</font>  Any other characters will impact the ability to run the script in the background.Within that folder, create a file called <font color='red'><b>description</b></font> which contains the description of the script.<br>
 Create a file called <font color='red'><b>script</b></font> which contains the actual script.
-Notepad can be used to do this on Windows machines, as prior to being executed, DOS line endings are automatically converted to Linux style line endings.  #!/bin/bash will even be automatically added to the start of the script before execution
+Notepad can be used to do this on Windows machines, as prior to being executed, DOS line endings are automatically converted to Linux style line endings.  <strong>#!/usr/bin/env bash</strong> will even be automatically added to the start of the script before execution
 Note that user interaction (ie: answering questions within the script) will NOT work.  Also, if there are any dependencies for the script (ie: other scripts), those can be called as usual, but make note that during execution, the script does not run from the flash drive (ie: include the full path to any dependency scripts)
 There is no point in running a particular script in the background if the script displays text that you need to see (ie: displaying the size of the docker logs)
 <br><br>
@@ -557,7 +557,7 @@ Additionally, scripts can contain inline variables which will modify the operati
 <b>name</b> this is the name of the script.  Without this variable, the GUI will display the folder's name<br>
 <b>argumentDescription</b> if present this will bring up a pop up asking the user for the argument list for the script.  Note that currently arguments do not accept spaces contained within one argument (ie: quoting and escaping spaces does NOT work)<br>
 <b>argumentDefault</b> this is the default arguments for the above<br>
-<br><b>How to implment these variables:</b> Immediately after the interpreter line (eg: immediately after the #!/bin/bash line), add these lines if you choose (you do not need to add all of them if you don't require them)<br>
+<br><b>How to implment these variables:</b> Immediately after the interpreter line (eg: immediately after the <strong>#!/usr/bin/env bash</strong> line), add these lines if you choose (you do not need to add all of them if you don't require them)<br>
 <br><font face='monospace'>
 &#35;description=this is the description of the script<br>
 &#35;foregroundOnly=true<br>

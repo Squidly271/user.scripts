@@ -18,7 +18,7 @@ if ( ! $schedules ) { return; }
 $unRaidVars = parse_ini_file("/var/local/emhttp/var.ini");
 foreach ($schedules as $scheduledScript) {
   if ( $scheduledScript['frequency'] == $selectedSchedule ) {
-    
+
     $path = $scheduledScript['script'];
     if ( ! is_file($path) ) {
       continue;
@@ -39,7 +39,7 @@ foreach ($schedules as $scheduledScript) {
     exec("mkdir -p ".escapeshellarg(dirname($newPath)));
     $script = file_get_contents($path);
     if ( ! startsWith($script,"#!") ) {
-      $script = "#!/bin/bash\n".$script;
+      $script = "#!/usr/bin/env bash\n".$script;
     }
     $script = str_replace("\r","",$script);
     file_put_contents($newPath,$script);
