@@ -154,7 +154,7 @@ switch ($_POST['action']) {
 		}
 		file_put_contents("/boot/config/plugins/user.scripts/schedule.json",json_encode($newSchedule,JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 		file_put_contents("/tmp/user.scripts/schedule.json",json_encode($newSchedule,JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
-		if ( $cronSchedule ) {
+		if ( $cronSchedule ?? false ) {
 			$cronSchedule ="# Generated cron schedule for user.scripts\n$cronSchedule\n";
 			file_put_contents("/boot/config/plugins/user.scripts/customSchedule.cron",$cronSchedule);
 		} else {

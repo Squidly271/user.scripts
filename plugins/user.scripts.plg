@@ -2,8 +2,8 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "user.scripts">
 <!ENTITY author    "Andrew Zawadzki">
-<!ENTITY version   "2023.09.30">
-<!ENTITY md5       "8d1b43ce145e9b800a001154e602d43c">
+<!ENTITY version   "2024.03.29">
+<!ENTITY md5       "527eb85697e42e69806d84f91c0103e3">
 <!ENTITY launch    "Settings/Userscripts">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
 <!ENTITY github    "Squidly271/user.scripts">
@@ -13,8 +13,12 @@
 <PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.3.3" icon="file-text-o">
 
 <CHANGES>
+###2024.03.29
+- Fixed: PHP8 warnings
+
 ###2023.09.30
 - Run update_cron at array start
+
 ###2023.07.16
 - Fixed: Setting foregroundOnly=false would act like setting it to be true
 
@@ -260,7 +264,7 @@ cp /usr/local/emhttp/plugins/user.scripts/cron/user.script.start.monthly.sh /etc
 echo ""
 echo "----------------------------------------------------"
 echo " &name; has been installed."
-echo " Copyright 2016-2023, Andrew Zawadzki"
+echo " Copyright 2016-2024, Andrew Zawadzki"
 echo " Version: &version;"
 echo "----------------------------------------------------"
 echo ""

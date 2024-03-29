@@ -1,7 +1,7 @@
 <?PHP
 ############################################################
 #                                                          #
-# User Scripts Plugin Copyright 2016-2020, Andrew Zawadzki #
+# User Scripts Plugin Copyright 2016-2024, Andrew Zawadzki #
 #                                                          #
 ############################################################
 
