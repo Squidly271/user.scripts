@@ -37,7 +37,7 @@ $newPath = str_replace("/usr/local/emhttp/plugins/user.scripts/scripts/","/tmp/u
 exec("mkdir -p ".escapeshellarg(dirname($newPath)));
 $script = file_get_contents($command);
 if ( ! startsWith($script,"#!") ) {
-  $script = "#!/bin/bash\n".$script;
+  $script = "#!/usr/bin/env bash\n".$script;
 }
 $script = str_replace("\r","",$script);
 file_put_contents($newPath,$script);

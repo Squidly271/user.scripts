@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-docker rmi $(docker images --quiet --filter "dangling=true")
+docker image prune --force || true
 
-echo Finished
-echo if an error shows above, no dangling images were found to delete
+echo "Finished"
+echo "if an error shows above, no dangling images were found to delete"
