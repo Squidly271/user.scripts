@@ -139,7 +139,7 @@ switch ($_POST['action']) {
 	
 	case 'applySchedule':
 		$schedules = $_POST['schedule'];
-		
+		$cronSchedule = "";
 		foreach ($schedules as $schedule) {
 			$script = str_replace('"',"",$schedule[0]);
 			$scriptSchedule['script'] = $script;
