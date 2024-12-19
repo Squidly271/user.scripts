@@ -2,8 +2,8 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "user.scripts">
 <!ENTITY author    "Andrew Zawadzki">
-<!ENTITY version   "2024.12.03">
-<!ENTITY md5       "33f3940fc8d67fa6f2f893c5acc8126f">
+<!ENTITY version   "2024.12.19">
+<!ENTITY md5       "c483d8b556be53a0cea0bae9360811b4">
 <!ENTITY launch    "Settings/Userscripts">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
 <!ENTITY github    "Squidly271/user.scripts">
@@ -13,6 +13,9 @@
 <PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.3.3" icon="file-text-o">
 
 <CHANGES>
+###2024.12.19
+- Disallow special characters when creating / renaming script
+
 ###2024.12.03
 - Fixed: PHP8 warnings
 

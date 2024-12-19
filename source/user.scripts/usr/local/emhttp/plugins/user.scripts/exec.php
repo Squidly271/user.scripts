@@ -203,7 +203,11 @@ switch ($_POST['action']) {
 	case 'changeName':
 		$script = isset($_POST['script']) ? urldecode(($_POST['script'])) : "";
 		$newName = isset($_POST['newName']) ? urldecode(($_POST['newName'])) : "";
-		file_put_contents("/boot/config/plugins/user.scripts/scripts/$script/name",trim($newName));
+		$newName = trim(str_replace(["\\","/","//","\/","*","?",".","'",".",";",":",",","|","+","=","<",">","[","]",'"',"!)"],"",$newName));
+		
+		if ( $newName) 
+			file_put_contents("/boot/config/plugins/user.scripts/scripts/$script/name",trim($newName));
+		
 		echo "ok";
 		break;
 	case 'changeDesc':
@@ -229,12 +233,15 @@ switch ($_POST['action']) {
 		break;
 	case 'addScript':
 		$scriptName = isset($_POST['scriptName']) ? urldecode(($_POST['scriptName'])) : "";
+		$scriptName = trim(htmlspecialchars_decode($scriptName));
+		$scriptName = str_replace(["\\","/","//","\/","*","?",".","'",".",";",":",",","|","+","=","<",">","[","]",'"',"!)"],"",$scriptName);
 		$folderName = str_replace('"',"",$scriptName);
 		$folderName = str_replace("'","",$folderName);
 		$folderName = str_replacE("&","",$folderName);
 		$folderName = str_replace("(","",$folderName);
 		$folderName = str_replace(")","",$folderName);
 		$folderName = preg_replace("/ {2,}/", " ", $folderName);
+		$folderNane = trim($folderName);
 		$folder = "/boot/config/plugins/user.scripts/scripts/$folderName";
 		while ( true ) {
 			if ( is_dir($folder) ) {
