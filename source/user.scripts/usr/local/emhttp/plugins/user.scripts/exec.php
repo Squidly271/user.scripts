@@ -146,11 +146,12 @@ switch ($_POST['action']) {
 			$scriptSchedule['frequency'] = $schedule[1];
 			$scriptSchedule['id'] = $schedule[2];
 			$scriptSchedule['custom'] = $schedule[3];
-			$newSchedule[$script] = $scriptSchedule;
 			
 			if ( $scriptSchedule['frequency'] == "custom" && $scriptSchedule['custom'] ) {
+				$scriptSchedule['custom'] = cronCase($scriptSchedule['custom']);
 				$cronSchedule .= trim($scriptSchedule['custom'])." /usr/local/emhttp/plugins/user.scripts/startCustom.php $script > /dev/null 2>&1\n";
 			}
+			$newSchedule[$script] = $scriptSchedule;
 		}
 		file_put_contents("/boot/config/plugins/user.scripts/schedule.json",json_encode($newSchedule,JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 		file_put_contents("/tmp/user.scripts/schedule.json",json_encode($newSchedule,JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
