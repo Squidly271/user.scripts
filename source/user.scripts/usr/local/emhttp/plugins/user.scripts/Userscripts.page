@@ -265,7 +265,10 @@ $(function() {
 	if ( typeof caPluginUpdateCheck === "function" ) {
 		caPluginUpdateCheck("user.scripts.plg",{name:"User Scripts"});
 	}
-
+  //Event listener for customschedule input fields to update applyButton prop
+  $("input[id^='customschedule']").on("input", function() {
+    $("#applyButton").prop("disabled", false);
+  });
 	$(".tipsterallowed").show();
 	$('.ca_tooltip').tooltipster({delay:[1000,1],timer:15000, animation:'grow', arrow:true, trigger:'custom', triggerOpen:{mouseenter: true}, triggerClose:{click:true,scroll:true,mouseleave:true}});
 	$('.ca_credits').tooltipster({

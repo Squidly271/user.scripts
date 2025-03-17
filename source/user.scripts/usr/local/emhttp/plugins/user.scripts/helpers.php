@@ -5,6 +5,39 @@
 #                                                          #
 ############################################################
 
+##################################################################################
+#                                                                                #
+# Slackware dcron 4.5 only supports lower or camel case DOW and Month alt values #
+# This changes any upper case to lower case                                      #
+#                                                                                #
+##################################################################################
+
+function cronCase($customCron) {
+  // List of 3-letter day and month abbreviations
+  $days = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+  $months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+
+  // Merge and create regex pattern correctly
+  // More complicated without the implode() function
+  // $dateWords = implode('|', array_merge($days, $months));
+  $dateWords = '';
+  foreach (array_merge($days, $months) as $word) {
+      if ($dateWords !== '') {
+          $dateWords .= '|';
+      }
+      $dateWords .= $word;
+  }
+
+  // Use preg_replace_callback to find only FULLY UPPERCASE matches
+  return preg_replace_callback(
+      "/\b($dateWords)\b/", // Ensure proper regex syntax with double quotes
+      function ($matches) {
+          return strtolower($matches[0]); // Convert match to lowercase
+      },
+  $customCron);
+
+}
+
 #################################################################
 #                                                               #
 # Helper function to determine if $haystack begins with $needle #
