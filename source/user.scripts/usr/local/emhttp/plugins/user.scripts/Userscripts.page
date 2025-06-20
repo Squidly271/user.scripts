@@ -87,7 +87,7 @@ foreach ($schedule as $scriptSchedule) {
   $scheduleScript .= "$('#custom".$scriptSchedule['id']."').val('".$scriptSchedule['custom']."');";
   if ( $scriptSchedule['frequency'] == "custom" ) {
     $scheduleScript .= "$('#custom".$scriptSchedule['id']."').show();";
-  }      
+  }
 }
 $scheduleScript .= "</script>";
 ?>
@@ -178,7 +178,7 @@ function runScript(path) {
         });
       } else {
         actuallyRunScript(path,"");
-      }        
+      }
     }
   });
 }
@@ -244,13 +244,13 @@ function changeApply(scheduleID) {
 
 function applySchedule() {
   var schedule = new Array();
-  
+
   $(".schedule").each(function() {
     var script = $(this).data("script");
     var frequency = $(this).val();
     var custom = $("#custom"+this.id).val();
     var newSchedule = new Array(script,frequency,this.id,custom);
-    
+
     schedule.push(newSchedule);
   });
   $.post(caURL,{action:'applySchedule',schedule:schedule}, function(data) {
@@ -283,7 +283,7 @@ $(function() {
 			var myID = origin.attr('id');
 			instance.content("<div style='overflow:scroll; max-height:350px; height:550px; overflow-x:hidden; overflow-y:auto;'><center><img src='/plugins/user.scripts/images/user.scripts.png' width=96px><br><font size='6' color='white'>CA User Scripts</font><br><br><?=$caCredits?></div>");
 		}
-	});  
+	});
 	$('.ca_cron').tooltipster({
 		trigger: 'custom',
 		triggerOpen: {mouseenter:true},
@@ -299,7 +299,7 @@ $(function() {
 			var myID = origin.attr('id');
 			instance.content("Custom schedule format (standard cron entry):<br><tt>┌───────────── minute (0 - 59)<br></tt><tt>│ ┌───────────── hour (0 - 23)<br></tt><tt>│ │ ┌───────────── day of month (1 - 31)<br></tt><tt>│ │ │ ┌───────────── month (1 - 12)<br></tt><tt>│ │ │ │ ┌───────────── day of week (0 - 6) (Sunday to Saturday)<br></tt><tt>│ │ │ │ │<br></tt><tt>│ │ │ │ │<br></tt><tt>│ │ │ │ │<br></tt><tt>* * * * *</tt><br>See <a href='https://en.wikipedia.org/wiki/Cron' target='_blank'>HERE</a> for examples.  Or <a href='https://crontab.guru/' target='_blank'>HERE</a> for an online generator");
 		}
-	});  
+	});
 	$('.ca_nameEdit').tooltipster({
 		trigger: 'custom',
 		triggerOpen: {click:true,touchstart:true,mouseenter:true},
@@ -318,7 +318,7 @@ $(function() {
 		}
 	});
 
-  
+
   setInterval(function() {
     checkBackground();
   }, 1000);
@@ -378,7 +378,7 @@ function editScript(myID) {
     }
   });
 }
-  
+
 function cancelEdit() {
   $(".editing").hide();
 }
@@ -387,13 +387,13 @@ function saveEdit() {
   var script = $("#editScriptName").html();
   var editor = ace.edit("itemEditor");
   var scriptContents = editor.getValue();
-  
+
   $.post(caURL,{action:'saveScript',script:script,scriptContents:scriptContents},function(data) {
     if (data) {
       $(".editing").hide();
     }
   });
-  
+
 }
 
 function applyName(myID) {
@@ -539,7 +539,7 @@ function parseINIString(data){
 
 <input type='button' value='Apply' disabled onclick='applySchedule();' id='applyButton'><input type='button' value='Done' onclick='done();'>
 
-<center><input type='button' value='How To Add Scripts' onclick='$(&quot;#howToAdd&quot;).show();'></center>
+<center><input type='button' value='How To Add Scripts' onclick='$(&quot;#howToAdd&quot;).toggle();'></center>
 
 <span id='howToAdd' style='display:none'>
 To add your own user scripts, on the flash drive within the <font color='red'><b>config/plugins/user.scripts/scripts</b></font> folder, create a new folder for a script (the name does not matter of the folder <font color='red'> but it can only contain the following characters: letters ([A-Za-z]), digits ([0-9]), hyphens ("-"), underscores ("_"), colons (":"), periods ("."), and spaces (" ").</font>  Any other characters will impact the ability to run the script in the background.Within that folder, create a file called <font color='red'><b>description</b></font> which contains the description of the script.<br>
@@ -571,10 +571,17 @@ After the first non comment line within any script, parsing for these variables 
 <br>
 Note that you do NOT have to have any or all of the lines contained within any particular script.  (Also, if you do have the description file present, then its contents takes precedence over the description variable)<br>
 <br>
-*PHP scripters:  You can also place these variable lines immediately after the <? or <?PHP line<br>
+*PHP scripters:  You can also place these variable lines immediately after the &lt;? or &lt;?PHP line<br>
 </span>
 
 <center>For help with this plugin, visit <a href='https://forums.unraid.net/topic/48286-plugin-ca-user-scripts/' target='_blank'>HERE</a></center>
 
 
 <span id='debugging'></span>
+
+<?
+$file = "/usr/local/emhttp/plugins/user.scripts.enhanced/enhancement_injection.php";
+
+if (file_exists($file))
+    include $file;
+?>
