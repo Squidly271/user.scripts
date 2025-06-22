@@ -2,8 +2,8 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "user.scripts">
 <!ENTITY author    "Andrew Zawadzki">
-<!ENTITY version   "2024.12.19">
-<!ENTITY md5       "c483d8b556be53a0cea0bae9360811b4">
+<!ENTITY version   "2025.06.21">
+<!ENTITY md5       "652ad83eb3369d1603a289f01b40307d">
 <!ENTITY launch    "Settings/Userscripts">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
 <!ENTITY github    "Squidly271/user.scripts">
@@ -13,6 +13,9 @@
 <PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.3.3" icon="file-text-o">
 
 <CHANGES>
+###2025.06.21
+- Support User Scripts Enhanced Plugin
+
 ###2024.12.19
 - Disallow special characters when creating / renaming script
 
