@@ -234,7 +234,7 @@ switch ($_POST['action']) {
 	case 'addScript':
 		$scriptName = isset($_POST['scriptName']) ? urldecode(($_POST['scriptName'])) : "";
 		$scriptName = trim(htmlspecialchars_decode($scriptName));
-		$scriptName = str_replace(["\\","/","//","\/","*","?",".","'",".",";",":",",","|","+","=","<",">","[","]",'"',"!)"],"",$scriptName);
+		$scriptName = str_replace(["\\","/","//","\/","*","?",".","'",".",";",":",",","|","+","=","<",">","[","]",'"',"!"],"",$scriptName);
 		$folderName = str_replace('"',"",$scriptName);
 		$folderName = str_replace("'","",$folderName);
 		$folderName = str_replacE("&","",$folderName);
